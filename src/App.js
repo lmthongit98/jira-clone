@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import NotFound from "./components/NotFound";
 import Auth from "./features/Auth";
@@ -13,6 +13,7 @@ function App() {
   return (
     <div>
       <Routes>
+        <Route path="/" element={<Navigate to="/auth" />} />
         <Route path="/project" element={<ProjectFeature />}>
           <Route path="" element={<ProjectList />} />
           <Route path="detail" element={<ProjectDetail />} />

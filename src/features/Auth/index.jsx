@@ -1,11 +1,15 @@
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import React from "react";
 import { Outlet } from "react-router-dom";
+
+const theme = createTheme();
 
 export default function Auth() {
   return (
     <div>
-      <h1>Auth</h1>
-      <Outlet />
+      <ThemeProvider theme={theme}>
+        <Outlet />
+      </ThemeProvider>
     </div>
   );
 }
