@@ -1,15 +1,16 @@
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import React from "react";
-import { Outlet } from "react-router-dom";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Box } from '@mui/system';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 
 const theme = createTheme();
 
 export default function Auth() {
   return (
-    <div>
+    <Box>
       <ThemeProvider theme={theme}>
         <Outlet />
       </ThemeProvider>
-    </div>
+    </Box>
   );
 }
