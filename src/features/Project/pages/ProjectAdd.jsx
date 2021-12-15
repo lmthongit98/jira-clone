@@ -5,6 +5,9 @@ import { toast } from 'react-toastify';
 import ProjectForm from '../components/ProjectForm';
 
 export default function ProjectBoard() {
+  const [projectCategories, setProjectCategories] = useState([]);
+  const [isCreating, setIsCreating] = useState(false);
+
   const handleSubmitAddProject = async (values) => {
     try {
       setIsCreating(true);
@@ -16,9 +19,6 @@ export default function ProjectBoard() {
       setIsCreating(false);
     }
   };
-
-  const [projectCategories, setProjectCategories] = useState([]);
-  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
     try {

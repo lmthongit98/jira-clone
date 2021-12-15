@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { login } from '../userSlice';
 
@@ -20,16 +21,18 @@ export default function Login() {
   const [isLogging, setIsLogging] = useState(false);
 
   const handleSubmitLoginForm = async (values) => {
-    setIsLogging(true);
     try {
+      setIsLogging(true);
       const action = login(values);
       const resultACtion = await dispatch(action);
       const user = unwrapResult(resultACtion);
       navigate('/project');
     } catch (error) {
       console.log('Fail to login', error);
+      toast.error('Email or password is incorrect!');
+    } finally {
+      setIsLogging(false);
     }
-    setIsLogging(false);
   };
 
   const validationSchema = Yup.object().shape({

@@ -33,7 +33,7 @@ export default function ProjectForm({ onSubmit, projectCategories = [], isCreati
 
   const handleSubmitForm = async (values) => {
     if (onSubmit) {
-      await onSubmit(values);
+      onSubmit(values);
     }
   };
 
