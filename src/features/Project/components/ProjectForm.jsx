@@ -1,27 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, FormHelperText, Typography } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react/lib/cjs/main/ts/components/Editor';
-import projectApi from 'api/projectApi';
-import InputField from 'components/form-controls/InputField';
+import InputField from 'components/form-controls/InputFieldOutLined';
 import SelectField from 'components/form-controls/SelectField';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-export default function ProjectForm({ onSubmit }) {
-  const [projectCategories, setProjectCategories] = useState([]);
-
-  useEffect(() => {
-    try {
-      (async () => {
-        const { content } = await projectApi.getProjectCategory();
-        setProjectCategories(content);
-      })();
-    } catch (error) {
-      console.log('Fail to get project category', error);
-    }
-  }, []);
-
+export default function ProjectForm({ onSubmit, projectCategories = [], isCreating = false }) {
   const validationSchema = Yup.object().shape({
     projectName: Yup.string().required('Email is required!'),
     description: Yup.string().required('Description is required!'),
@@ -45,9 +31,9 @@ export default function ProjectForm({ onSubmit }) {
     form.setValue('description', content, { shouldValidate: true, shouldDirty: true });
   };
 
-  const handleSubmitForm = (values) => {
+  const handleSubmitForm = async (values) => {
     if (onSubmit) {
-      onSubmit(values);
+      await onSubmit(values);
     }
   };
 
@@ -77,7 +63,7 @@ export default function ProjectForm({ onSubmit }) {
         <FormHelperText error={!!errors['description']}>{errors['description']?.message}</FormHelperText>
       </Box>
       <SelectField name="categoryId" label="Category" form={form} items={projectCategories} />
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+      <Button disabled={isCreating} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
         Submit
       </Button>
     </Box>
