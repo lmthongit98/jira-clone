@@ -3,13 +3,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Avatar, Button, Container, Grid, LinearProgress, Link, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { unwrapResult } from '@reduxjs/toolkit';
+import InputField from 'components/form-controls/InputField';
+import PasswordField from 'components/form-controls/PasswordField';
 import * as React from 'react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { default as InputField, default as PasswordField } from '../../../components/form-controls/InputField';
 import { login } from '../userSlice';
 
 export default function Login() {
@@ -45,7 +46,7 @@ export default function Login() {
   });
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ mt: 5 }}>
+    <Container component="main" maxWidth sx={{ mt: 5 }}>
       {isLogging && <LinearProgress />}
 
       <Box
