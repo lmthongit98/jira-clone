@@ -34,11 +34,10 @@ export default function ProjectBoard() {
   return (
     <Box>
       {isCreating && <LinearProgress />}
-
-      <Typography component="h1" variant="h5">
-        Create a new project
-      </Typography>
       <Container>
+        <Typography component="h1" variant="h5">
+          Create a new project
+        </Typography>
         <ProjectForm isCreating={isCreating} projectCategories={projectCategories} onSubmit={handleSubmitAddProject} />
       </Container>
     </Box>
