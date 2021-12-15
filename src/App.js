@@ -1,13 +1,13 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import "./App.css";
-import NotFound from "./components/NotFound";
-import Auth from "./features/Auth";
-import Login from "./features/Auth/pages/Login";
-import Register from "./features/Auth/pages/Register";
-import ProjectFeature from "./features/Project";
-import ProjectBoard from "./features/Project/pages/ProjectAdd";
-import ProjectDetail from "./features/Project/pages/ProjectDetail";
-import ProjectList from "./features/Project/pages/ProjectList";
+import { Navigate, Route, Routes } from 'react-router-dom';
+import './App.css';
+import NotFound from './components/NotFound';
+import Auth from './features/Auth';
+import Login from './features/Auth/pages/Login';
+import Register from './features/Auth/pages/Register';
+import ProjectFeature from './features/Project';
+import ProjectBoard from './features/Project/pages/ProjectAdd';
+import ProjectDetail from './features/Project/pages/ProjectDetail';
+import ProjectList from './features/Project/pages/ProjectList';
 
 function App() {
   return (
@@ -15,7 +15,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/auth" />} />
         <Route path="/project" element={<ProjectFeature />}>
-          <Route path="" element={<ProjectList />} />
+          <Route path="" element={<Navigate to="list" />} />
+          <Route path="list" element={<ProjectList />} />
           <Route path="detail" element={<ProjectDetail />} />
           <Route path="add" element={<ProjectBoard />} />
         </Route>

@@ -1,35 +1,40 @@
-import DraftsIcon from "@mui/icons-material/Drafts";
-import InboxIcon from "@mui/icons-material/Inbox";
-import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import React from "react";
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import SettingsIcon from '@mui/icons-material/Settings';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 export default function Sidebar() {
   return (
-    <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+    <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
       <nav aria-label="main mailbox folders">
         <List>
-          <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary="Inbox" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <DraftsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Drafts" />
-            </ListItemButton>
-          </ListItem>
+          <NavLink className={({ isActive }) => (isActive ? 'active' : '')} to="add">
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <AddBoxIcon />
+                </ListItemIcon>
+                <ListItemText primary="Create project" />
+              </ListItemButton>
+            </ListItem>
+          </NavLink>
+          <NavLink className={({ isActive }) => (isActive ? 'active' : '')} to="list">
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Project management" />
+              </ListItemButton>
+            </ListItem>
+          </NavLink>
         </List>
       </nav>
       <Divider />
@@ -37,12 +42,12 @@ export default function Sidebar() {
         <List>
           <ListItem disablePadding>
             <ListItemButton>
-              <ListItemText primary="Trash" />
+              <ListItemText primary="Release" />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton component="a" href="#simple-list">
-              <ListItemText primary="Spam" />
+              <ListItemText primary="Issue and filters" />
             </ListItemButton>
           </ListItem>
         </List>
