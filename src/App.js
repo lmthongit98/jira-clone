@@ -7,7 +7,7 @@ import Register from './features/Auth/pages/Register';
 import ProjectFeature from './features/Project';
 import ProjectBoard from './features/Project/pages/ProjectAdd';
 import ProjectDetail from './features/Project/pages/ProjectDetail';
-import ProjectList from './features/Project/pages/ProjectList';
+import ProjectList from './features/Project/pages/ProjectManagement';
 
 function App() {
   return (

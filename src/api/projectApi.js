@@ -5,9 +5,15 @@ const projectApi = {
     const url = 'ProjectCategory';
     return axiosClient.get(url);
   },
+
   createProject(data) {
     const url = 'Project/createProjectAuthorize';
     return axiosClient.post(url, data);
+  },
+
+  getAllProject() {
+    const url = 'Project/getAllProject';
+    return axiosClient.get(url);
   },
 };
 
