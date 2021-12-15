@@ -12,7 +12,7 @@ import { NavLink } from 'react-router-dom';
 
 export default function Sidebar() {
   return (
-    <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+    <Box sx={{ maxWidth: '100%', bgcolor: 'background.paper' }}>
       <nav aria-label="main mailbox folders">
         <List>
           <NavLink className={({ isActive }) => (isActive ? 'active' : '')} to="add">
