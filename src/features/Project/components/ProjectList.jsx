@@ -1,6 +1,6 @@
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { Chip, IconButton, TableCell } from '@mui/material';
+import { Button, Chip, IconButton, TableCell } from '@mui/material';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -39,6 +39,10 @@ export default function ProjectList(props) {
     setConfirmOpen(true);
   };
 
+  const handleClickMembers = (project) => {
+    console.log(project);
+  };
+
   return (
     <Box sx={{ width: '100%', mt: 3 }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
@@ -46,11 +50,11 @@ export default function ProjectList(props) {
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size="medium">
             <TableHead>
               <TableRow>
-                <TableCell>STT</TableCell>
+                <TableCell>Id</TableCell>
                 <TableCell>Project name</TableCell>
                 <TableCell>Category</TableCell>
                 <TableCell>Creator</TableCell>
-                <TableCell>Member</TableCell>
+                <TableCell>Members</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -63,7 +67,16 @@ export default function ProjectList(props) {
                   <TableCell>
                     <Chip label={project.creator?.name} color="success" variant="outlined" />
                   </TableCell>
-                  <TableCell>member</TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => {
+                        handleClickMembers(project);
+                      }}
+                      variant="outlined"
+                    >
+                      Members
+                    </Button>
+                  </TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleClickDelete(project.id)} variant="contained" color="error">
                       <DeleteOutlineOutlinedIcon />
