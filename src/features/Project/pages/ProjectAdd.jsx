@@ -21,14 +21,16 @@ export default function ProjectBoard() {
   };
 
   useEffect(() => {
+    let isSubscribe = true;
     try {
       (async () => {
         const { content } = await projectApi.getProjectCategory();
-        setProjectCategories(content);
+        isSubscribe && setProjectCategories(content);
       })();
     } catch (error) {
       console.log('Fail to get project category', error);
     }
+    return () => (isSubscribe = false);
   }, []);
 
   return (

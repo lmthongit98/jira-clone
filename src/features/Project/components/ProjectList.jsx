@@ -9,11 +9,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import * as React from 'react';
+import ConfirmDialog from 'components/ConfirmDialog';
+import React, { useState } from 'react';
 
-export default function ProjectList({ projectList = [] }) {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+export default function ProjectList(props) {
+  const { projectList, onDeleteProject } = props;
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -22,6 +26,17 @@ export default function ProjectList({ projectList = [] }) {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleDelete = () => {
+    if (onDeleteProject && idToDelete) {
+      onDeleteProject(idToDelete);
+    }
+  };
+
+  const handleClickDelete = (id) => {
+    setIdToDelete(id);
+    setConfirmOpen(true);
   };
 
   return (
@@ -50,7 +65,7 @@ export default function ProjectList({ projectList = [] }) {
                   </TableCell>
                   <TableCell>member</TableCell>
                   <TableCell>
-                    <IconButton variant="contained" color="error">
+                    <IconButton onClick={() => handleClickDelete(project.id)} variant="contained" color="error">
                       <DeleteOutlineOutlinedIcon />
                     </IconButton>
                     <IconButton variant="contained" color="primary">
@@ -72,6 +87,9 @@ export default function ProjectList({ projectList = [] }) {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+      <ConfirmDialog title="Delete Project?" open={confirmOpen} setOpen={setConfirmOpen} onConfirm={handleDelete}>
+        Are you sure you want to delete this project?
+      </ConfirmDialog>
     </Box>
   );
 }
