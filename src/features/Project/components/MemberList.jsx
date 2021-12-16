@@ -12,26 +12,72 @@ import {
   TextField,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import React, { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUsers } from '../projectSlice';
+import projectApi from 'api/projectApi';
+import userApi from 'api/userApi';
+import BackdropProgress from 'components/BackdropProgress';
+import ConfirmDialog from 'components/ConfirmDialog';
+import React, { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function MemberList(props) {
-  const { members, onAddMember, onDelete } = props;
+  const { selectedProject } = props;
   const searchRef = useRef();
-  const dispatch = useDispatch();
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState();
 
-  const { users } = useSelector((state) => state.projectReducer);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    dispatch(getUsers(''));
-  }, [dispatch]);
+    const getProjectDetail = async () => {
+      try {
+        const data = await projectApi.getProjectDetail(selectedProject.id);
+        setMembers(data?.content?.members);
+      } catch (error) {
+        console.log('Fail to get project detail', error);
+      }
+    };
+    getProjectDetail();
+  }, [selectedProject]);
 
-  const handleClickDelete = () => {};
+  const handleClickDelete = (userId) => {
+    if (!userId) return;
+    setConfirmOpen(true);
+    setIdToDelete(userId);
+  };
 
-  const handleAddUser = (e, value) => {
-    if (onAddMember && value) {
-      onAddMember(value.userId);
+  const handleDelete = async () => {
+    try {
+      setLoading(true);
+      const data = await userApi.deleteUserFromProject({ projectId: selectedProject.id, userId: idToDelete });
+      setMembers((prevMembers) => [...prevMembers.filter((member) => member.userId !== idToDelete)]);
+      toast.success('Successfully!');
+    } catch (error) {
+      toast.error('Fail to delete member from project');
+      console.log('Fail to delete member from project', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddUser = async (e, value) => {
+    if (!value) return;
+    try {
+      setLoading(true);
+      const data = await userApi.assignUserToProject({ projectId: selectedProject.id, userId: value.userId });
+      setMembers((prevMembers) => {
+        const newMember = users.find((user) => user.userId === value.userId);
+        if (newMember) {
+          return [...prevMembers, newMember];
+        }
+      });
+      toast.success('Successfully!');
+    } catch (error) {
+      toast.error('Fail to assign member to project');
+      console.log('Fail to assign member to project', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,7 +89,14 @@ export default function MemberList(props) {
     }
 
     searchRef.current = setTimeout(() => {
-      dispatch(getUsers(value));
+      (async () => {
+        try {
+          const data = await userApi.getUser(value);
+          setUsers(data?.content);
+        } catch (error) {
+          console.log('Fail to get users');
+        }
+      })();
     }, 300);
   };
 
@@ -54,8 +107,7 @@ export default function MemberList(props) {
         disablePortal
         onChange={handleAddUser}
         id="combo-box-users"
-        options={users.map((user) => ({ label: `${user.userId} -  ${user.name}`, userId: user.userId }))}
-        sx={{ width: 300 }}
+        options={users.map((user) => ({ label: user.name, userId: user.userId }))}
         renderInput={(params) => <TextField {...params} onChange={handleChange} label="Add member" />}
       />
       <Paper sx={{ width: '100%', mt: 2 }}>
@@ -66,10 +118,11 @@ export default function MemberList(props) {
                 <TableCell>Id</TableCell>
                 <TableCell>Avatar</TableCell>
                 <TableCell>Name</TableCell>
+                <TableCell>Delete</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {members.map((member, idx) => (
+              {members?.map((member, idx) => (
                 <TableRow key={member.userId}>
                   <TableCell>{member.userId}</TableCell>
                   <TableCell>
@@ -88,9 +141,10 @@ export default function MemberList(props) {
           </Table>
         </TableContainer>
       </Paper>
-      {/* <ConfirmDialog title="Delete Project?" open={confirmOpen} setOpen={setConfirmOpen} onConfirm={handleDelete}>
-        Are you sure you want to delete this project?
-      </ConfirmDialog> */}
+      <BackdropProgress isOpen={loading} />
+      <ConfirmDialog title="Delete Member?" open={confirmOpen} setOpen={setConfirmOpen} onConfirm={handleDelete}>
+        Are you sure you want to remove this user?
+      </ConfirmDialog>
     </Box>
   );
 }

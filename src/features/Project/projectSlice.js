@@ -1,12 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import projectApi from 'api/projectApi';
 import { toast } from 'react-toastify';
-import userApi from '../../api/userApi';
-
-export const getUsers = createAsyncThunk('project/getUsers', async (payload, thunkApi) => {
-  const data = await userApi.getUser(payload);
-  return data.content;
-});
 
 export const getProjects = createAsyncThunk('project/getProjects', async () => {
   const data = await projectApi.getAllProject();

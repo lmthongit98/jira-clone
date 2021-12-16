@@ -9,8 +9,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import CommonDialog from 'components/CommonDialog';
 import ConfirmDialog from 'components/ConfirmDialog';
 import React, { useState } from 'react';
+import MemberList from './MemberList';
 
 export default function ProjectList(props) {
   const { projectList, onDeleteProject } = props;
@@ -18,6 +20,8 @@ export default function ProjectList(props) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState();
+  const [openMembers, setOpenMembers] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(undefined);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -40,7 +44,8 @@ export default function ProjectList(props) {
   };
 
   const handleClickMembers = (project) => {
-    console.log(project);
+    setOpenMembers(true);
+    setSelectedProject(project);
   };
 
   return (
@@ -103,6 +108,9 @@ export default function ProjectList(props) {
       <ConfirmDialog title="Delete Project?" open={confirmOpen} setOpen={setConfirmOpen} onConfirm={handleDelete}>
         Are you sure you want to delete this project?
       </ConfirmDialog>
+      <CommonDialog title="Members" open={openMembers} setOpen={setOpenMembers}>
+        <MemberList selectedProject={selectedProject} />
+      </CommonDialog>
     </Box>
   );
 }

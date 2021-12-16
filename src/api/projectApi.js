@@ -20,6 +20,10 @@ const projectApi = {
     const url = `Project/deleteProject?projectId=${id}`;
     return axiosClient.delete(url);
   },
+
+  getProjectDetail(projectId) {
+    return axiosClient.get(`Project/getProjectDetail?id=${projectId}`);
+  },
 };
 
 export default projectApi;

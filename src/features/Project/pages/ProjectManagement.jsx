@@ -1,4 +1,5 @@
-import { Backdrop, Box, CircularProgress, Container, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
+import BackdropProgress from 'components/BackdropProgress';
 import Loading from 'components/Loading';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,9 +24,7 @@ export default function ProjectManagement() {
           Project management
         </Typography>
         <ProjectList onDeleteProject={handleDeleteProject} projectList={projects} />
-        <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={deleteLoading}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
+        <BackdropProgress isOpen={deleteLoading} />
         {loading && <Loading />}
       </Container>
     </Box>
