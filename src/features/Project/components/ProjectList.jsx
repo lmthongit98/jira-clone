@@ -49,8 +49,8 @@ export default function ProjectList(props) {
   };
 
   return (
-    <Box sx={{ width: '100%', mt: 3 }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+    <Box>
+      <Paper>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size="medium">
             <TableHead>

@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import BackdropProgress from 'components/BackdropProgress';
 import Loading from 'components/Loading';
 import React, { useEffect } from 'react';
@@ -19,14 +19,9 @@ export default function ProjectManagement() {
 
   return (
     <Box>
-      <Container>
-        <Typography component="h1" variant="h5">
-          Project management
-        </Typography>
-        <ProjectList onDeleteProject={handleDeleteProject} projectList={projects} />
-        <BackdropProgress isOpen={deleteLoading} />
-        {loading && <Loading />}
-      </Container>
+      <ProjectList onDeleteProject={handleDeleteProject} projectList={projects} />
+      <BackdropProgress isOpen={deleteLoading} />
+      {loading && <Loading />}
     </Box>
   );
 }
