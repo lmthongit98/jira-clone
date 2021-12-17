@@ -17,7 +17,7 @@ function App() {
         <Route path="/project" element={<ProjectFeature />}>
           <Route path="" element={<Navigate to="list" />} />
           <Route path="list" element={<ProjectList />} />
-          <Route path="detail" element={<ProjectDetail />} />
+          <Route path=":projectId" element={<ProjectDetail />} />
           <Route path="add" element={<ProjectAdd />} />
         </Route>
         <Route path="/auth" element={<Auth />}>

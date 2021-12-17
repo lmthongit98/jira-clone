@@ -15,6 +15,7 @@ import CommonDialog from 'components/CommonDialog';
 import ConfirmDialog from 'components/ConfirmDialog';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { deleteProject } from '../projectSlice';
 import MemberList from './MemberList';
 import ProjectForm from './ProjectForm';
@@ -79,7 +80,11 @@ export default function ProjectList({ projectList = [] }) {
               {projectList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((project, idx) => (
                 <TableRow key={project.id}>
                   <TableCell>{project.id}</TableCell>
-                  <TableCell>{project.projectName}</TableCell>
+                  <TableCell>
+                    <Box sx={{ color: '#1890ff' }} component={Link} to={`/project/${project.id}`}>
+                      {project.projectName}
+                    </Box>
+                  </TableCell>
                   <TableCell>{project.categoryName}</TableCell>
                   <TableCell>
                     <Chip label={project.creator.name} variant="outlined" />
@@ -88,8 +93,10 @@ export default function ProjectList({ projectList = [] }) {
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       {project.members.slice(0, 3).map((member) => (
                         <Box
+                          key={member.userId}
                           component="img"
                           src={member.avatar}
+                          alt={member.name}
                           height="35px"
                           sx={{ borderRadius: '50%', margin: '0 3px' }}
                         />

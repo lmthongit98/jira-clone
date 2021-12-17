@@ -122,7 +122,7 @@ export default function ProjectFeature() {
               </Typography>
             </Box>
           </Box>
-          <Box component="img" src={current.avatar} sx={{ borderRadius: '50%' }} height="40px"></Box>
+          <Box component="img" src={current.avatar} alt={current.name} sx={{ borderRadius: '50%' }} height="40px"></Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
