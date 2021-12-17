@@ -1,6 +1,7 @@
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { Button, Chip, IconButton, TableCell } from '@mui/material';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import { Chip, IconButton, TableCell } from '@mui/material';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -81,17 +82,44 @@ export default function ProjectList({ projectList = [] }) {
                   <TableCell>{project.projectName}</TableCell>
                   <TableCell>{project.categoryName}</TableCell>
                   <TableCell>
-                    <Chip label={project.creator?.name} color="success" variant="outlined" />
+                    <Chip label={project.creator.name} variant="outlined" />
                   </TableCell>
                   <TableCell>
-                    <Button
-                      onClick={() => {
-                        handleClickMembers(project);
-                      }}
-                      variant="outlined"
-                    >
-                      Members
-                    </Button>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      {project.members.slice(0, 3).map((member) => (
+                        <Box
+                          component="img"
+                          src={member.avatar}
+                          height="35px"
+                          sx={{ borderRadius: '50%', margin: '0 3px' }}
+                        />
+                      ))}
+                      {project.members.length > 3 ? (
+                        <Box
+                          component="div"
+                          sx={{
+                            width: '35px',
+                            height: '35px',
+                            borderRadius: '50%',
+                            backgroundColor: '#dfdfdf',
+                            textAlign: 'center',
+                            lineHeight: '35px',
+                          }}
+                        >
+                          ...
+                        </Box>
+                      ) : (
+                        ''
+                      )}
+                      <IconButton
+                        onClick={() => {
+                          handleClickMembers(project);
+                        }}
+                        variant="outlined"
+                      >
+                        <ManageAccountsIcon sx={{ fontSize: '35px' }} />
+                      </IconButton>
+                    </Box>
                   </TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleClickDelete(project.id)} variant="contained" color="error">

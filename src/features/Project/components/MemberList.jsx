@@ -17,7 +17,9 @@ import userApi from 'api/userApi';
 import BackdropProgress from 'components/BackdropProgress';
 import ConfirmDialog from 'components/ConfirmDialog';
 import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import { getProjects } from '../projectSlice';
 
 export default function MemberList(props) {
   const { selectedProject } = props;
@@ -26,8 +28,8 @@ export default function MemberList(props) {
   const [loading, setLoading] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState();
-
   const [users, setUsers] = useState([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const getProjectDetail = async () => {
@@ -52,6 +54,7 @@ export default function MemberList(props) {
       setLoading(true);
       const data = await userApi.deleteUserFromProject({ projectId: selectedProject.id, userId: idToDelete });
       setMembers((prevMembers) => [...prevMembers.filter((member) => member.userId !== idToDelete)]);
+      dispatch(getProjects());
       toast.success('Successfully!');
     } catch (error) {
       toast.error('Fail to delete member from project');
@@ -72,6 +75,7 @@ export default function MemberList(props) {
           return [...prevMembers, newMember];
         }
       });
+      dispatch(getProjects());
       toast.success('Successfully!');
     } catch (error) {
       toast.error('Fail to assign member to project');
