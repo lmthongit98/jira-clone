@@ -101,9 +101,11 @@ export default function ProjectForm({ onSubmit, onSubmitEdit, editedProject, isC
         <FormHelperText error={!!errors['description']}>{errors['description']?.message}</FormHelperText>
       </Box>
       <SelectField name="categoryId" label="Category" form={form} items={projectCategories} />
-      <Button disabled={isCreating} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-        Submit
-      </Button>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button disabled={isCreating} type="submit" variant="contained" sx={{ mt: 1, mb: 2 }}>
+          Submit
+        </Button>
+      </Box>
       <BackdropProgress isOpen={updateLoading} />
     </Box>
   );

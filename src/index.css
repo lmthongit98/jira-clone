@@ -16,6 +16,10 @@ a {
   display: block;
 }
 
-a.active {
+/* a.active {
   background-color: #e3e7e7;
+} */
+
+a.active span {
+  font-weight: bold;
 }

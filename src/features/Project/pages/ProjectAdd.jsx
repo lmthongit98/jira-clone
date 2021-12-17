@@ -1,4 +1,4 @@
-import { Box, Container, LinearProgress, Typography } from '@mui/material';
+import { Box, Breadcrumbs, LinearProgress, Link } from '@mui/material';
 import projectApi from 'api/projectApi';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -20,12 +20,17 @@ export default function ProjectBoard() {
   };
 
   return (
-    <Box>
+    <Box sx={{ maxWidth: '1200px' }}>
       {isCreating && <LinearProgress />}
-      <Container>
-        <Typography variant="h4">Add new project</Typography>
-        <ProjectForm isCreating={isCreating} onSubmit={handleSubmitAddProject} />
-      </Container>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link underline="hover" color="inherit">
+          Project
+        </Link>
+        <Link underline="hover" color="text.primary">
+          Create a new project
+        </Link>
+      </Breadcrumbs>
+      <ProjectForm isCreating={isCreating} onSubmit={handleSubmitAddProject} />
     </Box>
   );
 }

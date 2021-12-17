@@ -2,9 +2,9 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, Breadcrumbs, Button, Paper, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Button, Link, Paper, Typography } from '@mui/material';
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import useProjectDetail from '../hooks/useProjectDetail';
 
 export default function ProjectDetail() {
@@ -15,14 +15,14 @@ export default function ProjectDetail() {
   return (
     <Box sx={{ paddingLeft: '2%' }}>
       <Breadcrumbs aria-label="breadcrumb">
-        <Link underline="hover" color="inherit" to="/project/list">
+        <Link underline="hover" color="inherit">
           Project
         </Link>
         <Link underline="hover" color="inherit" to="/project/list">
           Project Management
         </Link>
-        <Link underline="hover" color="text.primary" to="">
-          Board
+        <Link underline="hover" color="text.primary">
+          {project?.projectName}
         </Link>
       </Breadcrumbs>
       <Box component="section" sx={{ mt: 2 }}>

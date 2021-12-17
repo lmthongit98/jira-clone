@@ -5,10 +5,8 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Box, ListItemButton, Toolbar, Typography } from '@mui/material';
-import MuiAppBar from '@mui/material/AppBar';
+import { Box, ListItemButton, Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -16,7 +14,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, Outlet } from 'react-router-dom';
@@ -53,24 +51,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
   width: drawerWidth,
   flexShrink: 0,
@@ -87,58 +67,48 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 }));
 
 export default function ProjectFeature() {
-  const theme = useTheme();
-  const [open, setOpen] = useState(drawerWidth > 0);
+  const [open, setOpen] = useState(true);
   const { current } = useSelector((state) => state.userReducer);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleOpenOrClose = () => {
+    setOpen((open) => !open);
   };
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <Box sx={{ flexGrow: 1 }}>
-            <Box sx={{ display: 'flex' }}>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: '36px',
-                  ...(open && { display: 'none' }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, lineHeight: '40px' }}>
-                Jira Clone
-              </Typography>
-            </Box>
-          </Box>
-          <Box component="img" src={current.avatar} alt={current.name} sx={{ borderRadius: '50%' }} height="40px"></Box>
-        </Toolbar>
-      </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
+          <Typography variant="h5" sx={{ mr: 5 }}>
+            Jira clone
+          </Typography>
+          <IconButton onClick={handleOpenOrClose}>{open ? <ChevronLeftIcon /> : <ChevronRightIcon />}</IconButton>
         </DrawerHeader>
         <Divider />
         <nav aria-label="main mailbox folders">
           <List>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <Box sx={{ minWidth: '56px' }}>
+                  <Box
+                    component="img"
+                    src={current.avatar}
+                    alt={current.name}
+                    sx={{ borderRadius: '50%' }}
+                    height="40px"
+                  ></Box>
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', ml: 1 }}>
+                  <ListItemText primary={current.name} />
+                  <ListItemText primary={current.phoneNumber} />
+                </Box>
+              </ListItemButton>
+            </ListItem>
+
             <NavLink className={({ isActive }) => (isActive ? 'active' : '')} to="add">
               <ListItem disablePadding>
                 <ListItemButton>
                   <ListItemIcon>
-                    <AddBoxIcon />
+                    <AddBoxIcon sx={{ color: 'black' }} />
                   </ListItemIcon>
                   <ListItemText primary="Create project" />
                 </ListItemButton>
@@ -148,7 +118,7 @@ export default function ProjectFeature() {
               <ListItem disablePadding>
                 <ListItemButton>
                   <ListItemIcon>
-                    <SettingsIcon />
+                    <SettingsIcon sx={{ color: 'black' }} />
                   </ListItemIcon>
                   <ListItemText primary="Project management" />
                 </ListItemButton>
@@ -162,7 +132,7 @@ export default function ProjectFeature() {
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  <LocalShippingIcon />
+                  <LocalShippingIcon sx={{ color: 'black' }} />
                 </ListItemIcon>
                 <ListItemText primary="Release" />
               </ListItemButton>
@@ -170,7 +140,15 @@ export default function ProjectFeature() {
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  <FindInPageIcon />
+                  <LocalShippingIcon sx={{ color: 'black' }} />
+                </ListItemIcon>
+                <ListItemText primary="Release" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <FindInPageIcon sx={{ color: 'black' }} />
                 </ListItemIcon>
                 <ListItemText primary="Pages" />
               </ListItemButton>
@@ -178,7 +156,7 @@ export default function ProjectFeature() {
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  <FilterListIcon />
+                  <FilterListIcon sx={{ color: 'black' }} />
                 </ListItemIcon>
                 <ListItemText primary="Issue and Filter" />
               </ListItemButton>
@@ -186,7 +164,7 @@ export default function ProjectFeature() {
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  <BugReportIcon />
+                  <BugReportIcon sx={{ color: 'black' }} />
                 </ListItemIcon>
                 <ListItemText primary="Bug and Report" />
               </ListItemButton>
@@ -195,7 +173,6 @@ export default function ProjectFeature() {
         </nav>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
         <Outlet />
       </Box>
     </Box>
