@@ -1,11 +1,10 @@
 import { Box, Container, LinearProgress } from '@mui/material';
 import projectApi from 'api/projectApi';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import ProjectForm from '../components/ProjectForm';
 
 export default function ProjectBoard() {
-  const [projectCategories, setProjectCategories] = useState([]);
   const [isCreating, setIsCreating] = useState(false);
 
   const handleSubmitAddProject = async (values) => {
@@ -20,24 +19,11 @@ export default function ProjectBoard() {
     }
   };
 
-  useEffect(() => {
-    let isSubscribe = true;
-    try {
-      (async () => {
-        const { content } = await projectApi.getProjectCategory();
-        isSubscribe && setProjectCategories(content);
-      })();
-    } catch (error) {
-      console.log('Fail to get project category', error);
-    }
-    return () => (isSubscribe = false);
-  }, []);
-
   return (
     <Box>
       {isCreating && <LinearProgress />}
       <Container>
-        <ProjectForm isCreating={isCreating} projectCategories={projectCategories} onSubmit={handleSubmitAddProject} />
+        <ProjectForm isCreating={isCreating} onSubmit={handleSubmitAddProject} />
       </Container>
     </Box>
   );

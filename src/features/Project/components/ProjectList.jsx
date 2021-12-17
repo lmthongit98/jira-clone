@@ -12,7 +12,10 @@ import TableRow from '@mui/material/TableRow';
 import CommonDialog from 'components/CommonDialog';
 import ConfirmDialog from 'components/ConfirmDialog';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { updateProject } from '../projectSlice';
 import MemberList from './MemberList';
+import ProjectForm from './ProjectForm';
 
 export default function ProjectList(props) {
   const { projectList, onDeleteProject } = props;
@@ -22,6 +25,8 @@ export default function ProjectList(props) {
   const [idToDelete, setIdToDelete] = useState();
   const [openMembers, setOpenMembers] = useState(false);
   const [selectedProject, setSelectedProject] = useState(undefined);
+  const [openEditProject, setOpenEditProject] = useState(false);
+  const dispatch = useDispatch();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -41,6 +46,16 @@ export default function ProjectList(props) {
   const handleClickDelete = (id) => {
     setIdToDelete(id);
     setConfirmOpen(true);
+  };
+
+  const handleEdit = (values) => {
+    const projectUpdate = { ...values, id: selectedProject.id, creator: selectedProject.creator.id };
+    dispatch(updateProject(projectUpdate));
+  };
+
+  const handleClickEdit = (project) => {
+    setOpenEditProject(true);
+    setSelectedProject(project);
   };
 
   const handleClickMembers = (project) => {
@@ -86,7 +101,7 @@ export default function ProjectList(props) {
                     <IconButton onClick={() => handleClickDelete(project.id)} variant="contained" color="error">
                       <DeleteOutlineOutlinedIcon />
                     </IconButton>
-                    <IconButton variant="contained" color="primary">
+                    <IconButton onClick={() => handleClickEdit(project)} variant="contained" color="primary">
                       <EditOutlinedIcon />
                     </IconButton>
                   </TableCell>
@@ -110,6 +125,14 @@ export default function ProjectList(props) {
       </ConfirmDialog>
       <CommonDialog title="Members" open={openMembers} setOpen={setOpenMembers}>
         <MemberList selectedProject={selectedProject} />
+      </CommonDialog>
+      <CommonDialog
+        title={`Edit project: ${selectedProject?.projectName}`}
+        maxWidth="lg"
+        open={openEditProject}
+        setOpen={setOpenEditProject}
+      >
+        <ProjectForm onSubmitEdit={handleEdit} editedProject={selectedProject} />
       </CommonDialog>
     </Box>
   );

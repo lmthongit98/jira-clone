@@ -12,15 +12,23 @@ export const deleteProject = createAsyncThunk('project/deleteProject', async (id
   return data.content;
 });
 
+export const updateProject = createAsyncThunk('project/updateProject', async (projectUpdate, ApiThunk) => {
+  const data = await projectApi.updateProject(projectUpdate);
+  ApiThunk.dispatch(getProjects());
+  return data.content;
+});
+
 const userSlice = createSlice({
   name: 'project',
   initialState: {
     projects: [],
     loading: false,
     deleteLoading: false,
+    updateLoading: false,
   },
   reducers: {},
   extraReducers: {
+    // GET ALL PROJECTS
     [getProjects.pending]: (state) => {
       state.loading = true;
     },
@@ -33,6 +41,7 @@ const userSlice = createSlice({
       console.log('Fail to get project', action.error);
     },
 
+    // DELETE
     [deleteProject.pending]: (state) => {
       state.deleteLoading = true;
     },
@@ -48,6 +57,23 @@ const userSlice = createSlice({
       state.deleteLoading = false;
       console.log('Fail to get project', action.error);
       toast.error('Fail to delete project');
+    },
+    [deleteProject.pending]: (state) => {
+      state.deleteLoading = true;
+    },
+
+    // UPDATE
+    [updateProject.pending]: (state) => {
+      state.updateLoading = true;
+    },
+    [updateProject.fulfilled]: (state, action) => {
+      state.updateLoading = false;
+      toast.success('Update project successfully!');
+    },
+    [updateProject.rejected]: (state, action) => {
+      console.log('Fail to get project', action.error);
+      toast.error('Fail to update project');
+      state.updateLoading = false;
     },
   },
 });

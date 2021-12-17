@@ -24,6 +24,10 @@ const projectApi = {
   getProjectDetail(projectId) {
     return axiosClient.get(`Project/getProjectDetail?id=${projectId}`);
   },
+
+  updateProject(projectUpdate) {
+    return axiosClient.put(`Project/updateProject?projectId=${projectUpdate.id}`, projectUpdate);
+  },
 };
 
 export default projectApi;

@@ -3,11 +3,12 @@ import { Box, Button, FormHelperText, Typography } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react/lib/cjs/main/ts/components/Editor';
 import InputField from 'components/form-controls/InputFieldOutLined';
 import SelectField from 'components/form-controls/SelectField';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
+import useProjectCategory from '../hooks/useProjectCategory';
 
-export default function ProjectForm({ onSubmit, projectCategories = [], isCreating = false }) {
+export default function ProjectForm({ onSubmit, onSubmitEdit, editedProject, isCreating = false }) {
   const validationSchema = Yup.object().shape({
     projectName: Yup.string().required('Email is required!'),
     description: Yup.string().required('Description is required!'),
@@ -25,15 +26,40 @@ export default function ProjectForm({ onSubmit, projectCategories = [], isCreati
 
   const {
     formState: { errors },
+    reset,
   } = form;
+
+  const [projectCategories] = useProjectCategory();
+
+  useEffect(() => {
+    if (editedProject) {
+      reset({
+        projectName: editedProject.projectName,
+        description: editedProject.description,
+        categoryId: editedProject.categoryId,
+      });
+    } else {
+      reset({
+        projectName: '',
+        description: '',
+        categoryId: '',
+      });
+    }
+  }, [editedProject, reset]);
 
   const handleEditorChange = (content, editor) => {
     form.setValue('description', content, { shouldValidate: true, shouldDirty: true });
   };
 
   const handleSubmitForm = async (values) => {
-    if (onSubmit) {
-      onSubmit(values);
+    if (editedProject) {
+      if (onSubmitEdit) {
+        onSubmitEdit(values);
+      }
+    } else {
+      if (onSubmit) {
+        onSubmit(values);
+      }
     }
   };
 
@@ -43,6 +69,7 @@ export default function ProjectForm({ onSubmit, projectCategories = [], isCreati
       <Box sx={{ my: 3 }}>
         <Typography>Description</Typography>
         <Editor
+          initialValue={editedProject ? editedProject.description : ''}
           apiKey="088k00pywypmab32s73wfelfhll22yz3asentq9oq3vb46q0"
           init={{
             selector: 'textarea#myTextArea',
