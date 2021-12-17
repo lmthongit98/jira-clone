@@ -53,13 +53,9 @@ const userSlice = createSlice({
       state.deleteLoading = false;
       toast.success('Delete project successfully!');
     },
-    [getProjects.rejected]: (state, action) => {
+    [deleteProject.rejected]: (state, action) => {
       state.deleteLoading = false;
-      console.log('Fail to get project', action.error);
-      toast.error('Fail to delete project');
-    },
-    [deleteProject.pending]: (state) => {
-      state.deleteLoading = true;
+      toast.error('Fail to delete project', action.error);
     },
 
     // UPDATE

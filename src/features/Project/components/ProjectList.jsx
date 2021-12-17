@@ -9,16 +9,16 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import BackdropProgress from 'components/BackdropProgress';
 import CommonDialog from 'components/CommonDialog';
 import ConfirmDialog from 'components/ConfirmDialog';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { updateProject } from '../projectSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteProject } from '../projectSlice';
 import MemberList from './MemberList';
 import ProjectForm from './ProjectForm';
 
-export default function ProjectList(props) {
-  const { projectList, onDeleteProject } = props;
+export default function ProjectList({ projectList = [] }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -26,6 +26,7 @@ export default function ProjectList(props) {
   const [openMembers, setOpenMembers] = useState(false);
   const [selectedProject, setSelectedProject] = useState(undefined);
   const [openEditProject, setOpenEditProject] = useState(false);
+  const { deleteLoading } = useSelector((state) => state.projectReducer);
   const dispatch = useDispatch();
 
   const handleChangePage = (event, newPage) => {
@@ -38,19 +39,14 @@ export default function ProjectList(props) {
   };
 
   const handleDelete = () => {
-    if (onDeleteProject && idToDelete) {
-      onDeleteProject(idToDelete);
+    if (idToDelete) {
+      dispatch(deleteProject(idToDelete));
     }
   };
 
   const handleClickDelete = (id) => {
     setIdToDelete(id);
     setConfirmOpen(true);
-  };
-
-  const handleEdit = (values) => {
-    const projectUpdate = { ...values, id: selectedProject.id, creator: selectedProject.creator.id };
-    dispatch(updateProject(projectUpdate));
   };
 
   const handleClickEdit = (project) => {
@@ -132,8 +128,9 @@ export default function ProjectList(props) {
         open={openEditProject}
         setOpen={setOpenEditProject}
       >
-        <ProjectForm onSubmitEdit={handleEdit} editedProject={selectedProject} />
+        <ProjectForm editedProject={selectedProject} />
       </CommonDialog>
+      <BackdropProgress isOpen={deleteLoading} />
     </Box>
   );
 }

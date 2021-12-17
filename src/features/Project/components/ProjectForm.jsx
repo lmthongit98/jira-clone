@@ -1,14 +1,21 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, FormHelperText, Typography } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react/lib/cjs/main/ts/components/Editor';
+import BackdropProgress from 'components/BackdropProgress';
 import InputField from 'components/form-controls/InputFieldOutLined';
 import SelectField from 'components/form-controls/SelectField';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import useProjectCategory from '../hooks/useProjectCategory';
+import { updateProject } from '../projectSlice';
 
 export default function ProjectForm({ onSubmit, onSubmitEdit, editedProject, isCreating = false }) {
+  const { updateLoading } = useSelector((state) => state.projectReducer);
+
+  const dispatch = useDispatch();
+
   const validationSchema = Yup.object().shape({
     projectName: Yup.string().required('Email is required!'),
     description: Yup.string().required('Description is required!'),
@@ -53,12 +60,16 @@ export default function ProjectForm({ onSubmit, onSubmitEdit, editedProject, isC
 
   const handleSubmitForm = async (values) => {
     if (editedProject) {
-      if (onSubmitEdit) {
-        onSubmitEdit(values);
-      }
+      const projectUpdate = { ...values, id: editedProject.id, creator: editedProject.creator.id };
+      dispatch(updateProject(projectUpdate));
     } else {
       if (onSubmit) {
         onSubmit(values);
+        reset({
+          projectName: '',
+          description: '',
+          categoryId: '',
+        });
       }
     }
   };
@@ -93,6 +104,7 @@ export default function ProjectForm({ onSubmit, onSubmitEdit, editedProject, isC
       <Button disabled={isCreating} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
         Submit
       </Button>
+      <BackdropProgress isOpen={updateLoading} />
     </Box>
   );
 }
