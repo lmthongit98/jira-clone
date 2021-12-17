@@ -7,7 +7,7 @@ import FindInPageIcon from '@mui/icons-material/FindInPage';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Box, ListItemButton } from '@mui/material';
+import { Box, ListItemButton, Toolbar, Typography } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';
@@ -17,9 +17,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { styled, useTheme } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import React from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { NavLink, Outlet } from 'react-router-dom';
 
 const drawerWidth = 240;
@@ -89,7 +88,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function ProjectFeature() {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(drawerWidth > 0);
+  const [open, setOpen] = useState(drawerWidth > 0);
+  const { current } = useSelector((state) => state.userReducer);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -98,25 +98,31 @@ export default function ProjectFeature() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar position="fixed" open={open}>
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: '36px',
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Jira Clone
-          </Typography>
+          <Box sx={{ flexGrow: 1 }}>
+            <Box sx={{ display: 'flex' }}>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                sx={{
+                  marginRight: '36px',
+                  ...(open && { display: 'none' }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, lineHeight: '40px' }}>
+                Jira Clone
+              </Typography>
+            </Box>
+          </Box>
+          <Box component="img" src={current.avatar} sx={{ borderRadius: '50%' }} height="40px"></Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
