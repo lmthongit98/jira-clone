@@ -5,7 +5,6 @@ import Auth from './features/Auth';
 import Login from './features/Auth/pages/Login';
 import Register from './features/Auth/pages/Register';
 import ProjectFeature from './features/Project';
-import ProjectAdd from './features/Project/pages/ProjectAdd';
 import ProjectDetail from './features/Project/pages/ProjectDetail';
 import ProjectList from './features/Project/pages/ProjectManagement';
 
@@ -18,7 +17,6 @@ function App() {
           <Route path="" element={<Navigate to="list" />} />
           <Route path="list" element={<ProjectList />} />
           <Route path=":projectId" element={<ProjectDetail />} />
-          <Route path="add" element={<ProjectAdd />} />
         </Route>
         <Route path="/auth" element={<Auth />}>
           <Route path="" element={<Login />} />

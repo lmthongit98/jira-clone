@@ -1,4 +1,3 @@
-import AddBoxIcon from '@mui/icons-material/AddBox';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -103,17 +102,6 @@ export default function ProjectFeature() {
                 </Box>
               </ListItemButton>
             </ListItem>
-
-            <NavLink className={({ isActive }) => (isActive ? 'active' : '')} to="add">
-              <ListItem disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <AddBoxIcon sx={{ color: 'black' }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Create project" />
-                </ListItemButton>
-              </ListItem>
-            </NavLink>
             <NavLink className={({ isActive }) => (isActive ? 'active' : '')} to="list">
               <ListItem disablePadding>
                 <ListItemButton>
@@ -129,14 +117,6 @@ export default function ProjectFeature() {
         <Divider />
         <nav aria-label="secondary mailbox folders">
           <List>
-            <ListItem disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  <LocalShippingIcon sx={{ color: 'black' }} />
-                </ListItemIcon>
-                <ListItemText primary="Release" />
-              </ListItemButton>
-            </ListItem>
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
