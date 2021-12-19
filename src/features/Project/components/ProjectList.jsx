@@ -166,11 +166,16 @@ export default function ProjectList({ projectList = [] }) {
       </CommonDialog>
       <CommonDialog
         title={`Update project: ${selectedProject?.projectName}`}
-        maxWidth="lg"
+        maxWidth="md"
         open={openEditProject}
         setOpen={setOpenEditProject}
       >
-        <ProjectForm onSubmit={handleSubmitFormEdit} initialValue={selectedProject} loading={updateLoading} />
+        <ProjectForm
+          setOpen={setOpenEditProject}
+          onSubmit={handleSubmitFormEdit}
+          initialValue={selectedProject}
+          loading={updateLoading}
+        />
       </CommonDialog>
       <BackdropProgress isOpen={deleteLoading} />
     </Box>

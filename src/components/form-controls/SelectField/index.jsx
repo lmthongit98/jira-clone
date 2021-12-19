@@ -13,6 +13,7 @@ function SelectField({ name, control, label, options, ...inputProps }) {
 
   return (
     <TextField
+      size="small"
       select
       fullWidth
       onChange={onChange}

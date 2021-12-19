@@ -12,11 +12,10 @@ import {
   TextField,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import projectApi from 'api/projectApi';
 import userApi from 'api/userApi';
 import BackdropProgress from 'components/BackdropProgress';
 import ConfirmDialog from 'components/ConfirmDialog';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { getProjects } from '../projectSlice';
@@ -24,24 +23,12 @@ import { getProjects } from '../projectSlice';
 export default function MemberList(props) {
   const { selectedProject } = props;
   const searchRef = useRef();
-  const [members, setMembers] = useState([]);
+  const [members, setMembers] = useState(selectedProject.members);
   const [loading, setLoading] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState();
   const [users, setUsers] = useState([]);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const getProjectDetail = async () => {
-      try {
-        const data = await projectApi.getProjectDetail(selectedProject.id);
-        setMembers(data?.content?.members);
-      } catch (error) {
-        console.log('Fail to get project detail', error);
-      }
-    };
-    getProjectDetail();
-  }, [selectedProject]);
 
   const handleClickDelete = (userId) => {
     if (!userId) return;

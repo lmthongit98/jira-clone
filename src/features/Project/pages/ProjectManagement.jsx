@@ -54,8 +54,8 @@ export default function ProjectManagement() {
         </Button>
       </Box>
       <ProjectList projectList={projects} />
-      <CommonDialog title="Add a new project" maxWidth="lg" open={openAddProject} setOpen={setOpenAddProject}>
-        <ProjectForm onSubmit={handleSubmitFormAdd} loading={addLoading} />
+      <CommonDialog title="Add a new project" maxWidth="md" open={openAddProject} setOpen={setOpenAddProject}>
+        <ProjectForm setOpen={setOpenAddProject} onSubmit={handleSubmitFormAdd} loading={addLoading} />
       </CommonDialog>
       {loading && <Loading />}
     </Box>

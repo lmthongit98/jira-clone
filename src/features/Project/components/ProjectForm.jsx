@@ -13,6 +13,7 @@ export default function ProjectForm({
   onSubmit,
   initialValue = { projectName: '', description: '', categoryId: '' },
   loading,
+  setOpen,
 }) {
   const validationSchema = Yup.object().shape({
     projectName: Yup.string().required('Email is required!'),
@@ -70,6 +71,9 @@ export default function ProjectForm({
       </Box>
       <SelectField name="categoryId" label="Category" control={control} options={projectCategories} />
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button type="button" onClick={() => setOpen(false)} variant="outlined" sx={{ mt: 1, mb: 2, mr: 1 }}>
+          Cancel
+        </Button>
         <Button type="submit" variant="contained" sx={{ mt: 1, mb: 2 }}>
           Submit
         </Button>

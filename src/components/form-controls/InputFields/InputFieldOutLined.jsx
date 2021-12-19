@@ -13,6 +13,7 @@ export default function InputFieldStandard({ name, control, label, ...inputProps
 
   return (
     <TextField
+      size="small"
       fullWidth
       value={value}
       label={label}

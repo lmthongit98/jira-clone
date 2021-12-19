@@ -4,9 +4,17 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { IconButton, Tooltip } from '@mui/material';
 import { Box } from '@mui/system';
-import React from 'react';
+import CommonDialog from 'components/CommonDialog';
+import React, { useState } from 'react';
+import TaskForm from './TaskForm';
 
 export default function NavBarLeft() {
+  const [openAddIssue, setOpenAddIssue] = useState(false);
+
+  const handleClickAddIssue = () => {
+    setOpenAddIssue(true);
+  };
+
   return (
     <Box
       sx={{
@@ -30,7 +38,7 @@ export default function NavBarLeft() {
           <MenuIcon />
         </IconButton>
         <Tooltip title="Create issue" placement="right-end" arrow>
-          <IconButton>
+          <IconButton onClick={handleClickAddIssue}>
             <AddIcon />
           </IconButton>
         </Tooltip>
@@ -48,6 +56,9 @@ export default function NavBarLeft() {
           </IconButton>
         </Tooltip>
       </Box>
+      <CommonDialog title="Add a issue" maxWidth="md" open={openAddIssue} setOpen={setOpenAddIssue}>
+        <TaskForm setOpen={setOpenAddIssue} />
+      </CommonDialog>
     </Box>
   );
 }
