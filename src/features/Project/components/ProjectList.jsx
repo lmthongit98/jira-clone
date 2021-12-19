@@ -16,7 +16,7 @@ import ConfirmDialog from 'components/ConfirmDialog';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { deleteProject } from '../projectSlice';
+import { deleteProject, updateProject } from '../projectSlice';
 import MemberList from './MemberList';
 import ProjectForm from './ProjectForm';
 
@@ -28,7 +28,7 @@ export default function ProjectList({ projectList = [] }) {
   const [openMembers, setOpenMembers] = useState(false);
   const [selectedProject, setSelectedProject] = useState(undefined);
   const [openEditProject, setOpenEditProject] = useState(false);
-  const { deleteLoading } = useSelector((state) => state.projectReducer);
+  const { deleteLoading, updateLoading } = useSelector((state) => state.projectReducer);
   const dispatch = useDispatch();
 
   const handleChangePage = (event, newPage) => {
@@ -43,6 +43,7 @@ export default function ProjectList({ projectList = [] }) {
   const handleDelete = () => {
     if (idToDelete) {
       dispatch(deleteProject(idToDelete));
+      setIdToDelete(null);
     }
   };
 
@@ -59,6 +60,12 @@ export default function ProjectList({ projectList = [] }) {
   const handleClickMembers = (project) => {
     setOpenMembers(true);
     setSelectedProject(project);
+  };
+
+  const handleSubmitFormEdit = (values) => {
+    if (!selectedProject) return;
+    const projectUpdate = { ...values, id: selectedProject.id, creator: selectedProject.creator.id };
+    dispatch(updateProject(projectUpdate));
   };
 
   return (
@@ -158,12 +165,12 @@ export default function ProjectList({ projectList = [] }) {
         <MemberList selectedProject={selectedProject} />
       </CommonDialog>
       <CommonDialog
-        title={`Edit project: ${selectedProject?.projectName}`}
+        title={`Update project: ${selectedProject?.projectName}`}
         maxWidth="lg"
         open={openEditProject}
         setOpen={setOpenEditProject}
       >
-        <ProjectForm editedProject={selectedProject} />
+        <ProjectForm onSubmit={handleSubmitFormEdit} initialValue={selectedProject} loading={updateLoading} />
       </CommonDialog>
       <BackdropProgress isOpen={deleteLoading} />
     </Box>

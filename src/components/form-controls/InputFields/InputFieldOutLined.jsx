@@ -1,8 +1,8 @@
-import { MenuItem, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import React from 'react';
 import { useController } from 'react-hook-form';
 
-function SelectField({ name, control, label, options, ...inputProps }) {
+export default function InputFieldStandard({ name, control, label, ...inputProps }) {
   const {
     field: { value, onChange, onBlur, ref },
     fieldState: { invalid, error },
@@ -13,23 +13,16 @@ function SelectField({ name, control, label, options, ...inputProps }) {
 
   return (
     <TextField
-      select
       fullWidth
+      value={value}
+      label={label}
+      variant="outlined"
       onChange={onChange}
       onBlur={onBlur}
       inputRef={ref}
-      value={value}
-      label={label}
       error={invalid}
       helperText={error?.message}
-    >
-      {options.map((option) => (
-        <MenuItem key={option.id} value={option.id}>
-          {option.projectCategoryName}
-        </MenuItem>
-      ))}
-    </TextField>
+      inputProps={inputProps}
+    />
   );
 }
-
-export default SelectField;

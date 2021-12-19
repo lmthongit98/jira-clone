@@ -47,9 +47,7 @@ const userSlice = createSlice({
     },
     [deleteProject.fulfilled]: (state, action) => {
       const id = action.payload?.[0];
-      if (id) {
-        state.projects = state.projects.filter((project) => project.id !== id);
-      }
+      state.projects = state.projects.filter((project) => project.id !== id);
       state.deleteLoading = false;
       toast.success('Delete project successfully!');
     },

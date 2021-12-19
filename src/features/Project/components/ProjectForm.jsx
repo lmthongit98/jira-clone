@@ -2,85 +2,53 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, FormHelperText, Typography } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react/lib/cjs/main/ts/components/Editor';
 import BackdropProgress from 'components/BackdropProgress';
-import InputField from 'components/form-controls/InputFieldOutLined';
+import InputFieldOutLined from 'components/form-controls/InputFields/InputFieldOutLined';
 import SelectField from 'components/form-controls/SelectField';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import useProjectCategory from '../hooks/useProjectCategory';
-import { updateProject } from '../projectSlice';
 
-export default function ProjectForm({ onSubmit, onSubmitEdit, editedProject, isCreating = false }) {
-  const { updateLoading } = useSelector((state) => state.projectReducer);
-
-  const dispatch = useDispatch();
-
+export default function ProjectForm({
+  onSubmit,
+  initialValue = { projectName: '', description: '', categoryId: '' },
+  loading,
+}) {
   const validationSchema = Yup.object().shape({
     projectName: Yup.string().required('Email is required!'),
     description: Yup.string().required('Description is required!'),
     categoryId: Yup.string().required('Category is required!'),
   });
 
-  const form = useForm({
-    defaultValues: {
-      projectName: '',
-      description: '',
-      categoryId: '',
-    },
+  const {
+    formState: { errors },
+    control,
+    setValue,
+    handleSubmit,
+  } = useForm({
+    defaultValues: initialValue,
     resolver: yupResolver(validationSchema),
   });
 
-  const {
-    formState: { errors },
-    reset,
-  } = form;
-
   const [projectCategories] = useProjectCategory();
 
-  useEffect(() => {
-    if (editedProject) {
-      reset({
-        projectName: editedProject.projectName,
-        description: editedProject.description,
-        categoryId: editedProject.categoryId,
-      });
-    } else {
-      reset({
-        projectName: '',
-        description: '',
-        categoryId: '',
-      });
-    }
-  }, [editedProject, reset]);
-
   const handleEditorChange = (content, editor) => {
-    form.setValue('description', content, { shouldValidate: true, shouldDirty: true });
+    setValue('description', content, { shouldValidate: true, shouldDirty: true });
   };
 
-  const handleSubmitForm = async (values) => {
-    if (editedProject) {
-      const projectUpdate = { ...values, id: editedProject.id, creator: editedProject.creator.id };
-      dispatch(updateProject(projectUpdate));
-    } else {
-      if (onSubmit) {
-        onSubmit(values);
-        reset({
-          projectName: '',
-          description: '',
-          categoryId: '',
-        });
-      }
+  const handleSubmitForm = (values) => {
+    if (onSubmit) {
+      onSubmit(values);
     }
   };
 
   return (
-    <Box component="form" onSubmit={form.handleSubmit(handleSubmitForm)} noValidate sx={{ mt: 1 }}>
-      <InputField name="projectName" label="Project Name" form={form} />
+    <Box component="form" onSubmit={handleSubmit(handleSubmitForm)} noValidate sx={{ mt: 1 }}>
+      <InputFieldOutLined name="projectName" label="Project name" control={control} />
       <Box sx={{ my: 3 }}>
         <Typography>Description</Typography>
         <Editor
-          initialValue={editedProject ? editedProject.description : ''}
+          initialValue={initialValue?.description}
           apiKey="088k00pywypmab32s73wfelfhll22yz3asentq9oq3vb46q0"
           init={{
             selector: 'textarea#myTextArea',
@@ -100,13 +68,13 @@ export default function ProjectForm({ onSubmit, onSubmitEdit, editedProject, isC
         />
         <FormHelperText error={!!errors['description']}>{errors['description']?.message}</FormHelperText>
       </Box>
-      <SelectField name="categoryId" label="Category" form={form} items={projectCategories} />
+      <SelectField name="categoryId" label="Category" control={control} options={projectCategories} />
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button disabled={isCreating} type="submit" variant="contained" sx={{ mt: 1, mb: 2 }}>
+        <Button type="submit" variant="contained" sx={{ mt: 1, mb: 2 }}>
           Submit
         </Button>
       </Box>
-      <BackdropProgress isOpen={updateLoading} />
+      <BackdropProgress isOpen={loading} />
     </Box>
   );
 }

@@ -5,7 +5,7 @@ import React from 'react';
 export default function CommonDialog(props) {
   const { title, children, open, setOpen, maxWidth = 'sm' } = props;
   return (
-    <Dialog fullWidth maxWidth={maxWidth} open={open} aria-labelledby="confirm-dialog">
+    <Dialog fullWidth onClose={() => setOpen(false)} maxWidth={maxWidth} open={open} aria-labelledby="confirm-dialog">
       <DialogTitle id="confirm-dialog">
         {title}
         <IconButton
