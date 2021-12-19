@@ -16,10 +16,11 @@ a {
   display: block;
 }
 
-/* a.active {
-  background-color: #e3e7e7;
-} */
+a.active {
+  background-color: #ebecf0;
+}
 
-a.active span {
-  font-weight: bold;
+a.active span,
+a.active svg {
+  color: #1890ff;
 }
