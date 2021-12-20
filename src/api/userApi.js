@@ -17,6 +17,10 @@ const userApi = {
   deleteUserFromProject(userProject) {
     return axiosClient.post('Project/removeUserFromProject', userProject);
   },
+
+  getUserByProjectId(projectId) {
+    return axiosClient.get(`Users/getUserByProjectId?idProject=${projectId}`);
+  },
 };
 
 export default userApi;

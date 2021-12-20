@@ -23,6 +23,10 @@ export default function MultipleSelectField({ name, control, label, names, ...in
     control,
   });
 
+  const getNameByValue = (value) => {
+    return names.find((name) => name.value === value)?.label;
+  };
+
   return (
     <FormControl fullWidth>
       <InputLabel>{label}</InputLabel>
@@ -38,15 +42,15 @@ export default function MultipleSelectField({ name, control, label, names, ...in
         renderValue={(selected) => (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
             {selected.map((value) => (
-              <Chip key={value} label={'ahihi'} />
+              <Chip key={value} variant="outlined" label={getNameByValue(value)} />
             ))}
           </Box>
         )}
         MenuProps={MenuProps}
       >
         {names.map((name) => (
-          <MenuItem key={name} value={name}>
-            {name}
+          <MenuItem key={name.id} value={name.value}>
+            {name.label}
           </MenuItem>
         ))}
       </Select>

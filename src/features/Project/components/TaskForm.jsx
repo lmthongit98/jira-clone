@@ -1,10 +1,10 @@
 import { Box, Button, Slider, Typography } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react/lib/cjs/main/ts/components/Editor';
-import BackdropProgress from 'components/BackdropProgress';
+import userApi from 'api/userApi';
 import InputFieldOutLined from 'components/form-controls/InputFields/InputFieldOutLined';
 import SelectField from 'components/form-controls/SelectField';
 import MultipleSelectField from 'components/MultipleSelectField';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
@@ -21,15 +21,20 @@ const names = [
   'Kelly Snyder',
 ];
 
-export default function TaskForm({ onSubmit, initialValue, loading, setOpen }) {
+export default function TaskForm(props) {
+  const { onSubmit, initialValue, loading, setOpen, statuses, priorities, taskTypes, myProjects } = props;
   const validationSchema = Yup.object().shape({
     projectName: Yup.string().required('Email is required!'),
     description: Yup.string().required('Description is required!'),
     categoryId: Yup.string().required('Category is required!'),
   });
 
+  const [assignees, setAssignees] = useState([]);
+
   const handleSubmitForm = (values) => {
-    console.log(values);
+    if (onSubmit) {
+      onSubmit(values);
+    }
   };
 
   const {
@@ -39,19 +44,21 @@ export default function TaskForm({ onSubmit, initialValue, loading, setOpen }) {
     handleSubmit,
     watch,
   } = useForm({
-    defaultValues: {
-      listUserAsign: [0],
-      taskName: '',
-      description: '',
-      statusId: '',
-      originalEstimate: 0,
-      timeTrackingSpent: 0,
-      timeTrackingRemaining: 0,
-      projectId: 0,
-      typeId: 0,
-      priorityId: 0,
-    },
+    defaultValues: initialValue,
   });
+
+  const watchProject = watch('projectId');
+
+  useEffect(() => {
+    try {
+      (async () => {
+        const { content } = await userApi.getUserByProjectId(watchProject);
+        setAssignees(content);
+      })();
+    } catch (error) {
+      console.log('Fail', error);
+    }
+  }, [watchProject]);
 
   const handleEditorChange = (content, editor) => {
     setValue('description', content, { shouldValidate: true, shouldDirty: true });
@@ -59,26 +66,55 @@ export default function TaskForm({ onSubmit, initialValue, loading, setOpen }) {
 
   return (
     <Box component="form" onSubmit={handleSubmit(handleSubmitForm)} noValidate sx={{ mt: 1 }}>
-      <Box sx={{ my: 1 }}>
-        <SelectField name="projectId" label="Project" control={control} options={[]} />
+      <Box sx={{ my: 2 }}>
+        <SelectField
+          name="projectId"
+          label="Project"
+          control={control}
+          options={myProjects.map((item) => ({ id: item.id, label: item.projectName, value: item.id }))}
+        />
       </Box>
-      <Box sx={{ my: 1 }}>
+      <Box sx={{ my: 2 }}>
         <InputFieldOutLined name="taskName" label="Task name" control={control} />
       </Box>
-      <Box sx={{ my: 1 }}>
-        <SelectField name="statusId" label="Status" control={control} options={[]} />
+      <Box sx={{ my: 2 }}>
+        <SelectField
+          name="statusId"
+          label="Status"
+          control={control}
+          options={statuses.map((status) => ({
+            id: status.statusId,
+            label: status.statusName,
+            value: status.statusId,
+          }))}
+        />
       </Box>
       <Box sx={{ display: 'flex' }}>
         <Box sx={{ width: '50%', my: 1, mr: 1 }}>
-          <SelectField name="projectId" label="Priority" control={control} options={[]} />
+          <SelectField
+            name="priorityId"
+            label="Priority"
+            control={control}
+            options={priorities.map((item) => ({ id: item.priorityId, label: item.priority, value: item.priorityId }))}
+          />
         </Box>
         <Box sx={{ width: '50%', my: 1, ml: 1 }}>
-          <SelectField name="typeId" label="TaskType" control={control} options={[]} />
+          <SelectField
+            name="typeId"
+            label="TaskType"
+            control={control}
+            options={taskTypes.map((item) => ({ id: item.id, label: item.taskType, value: item.id }))}
+          />
         </Box>
       </Box>
       <Box sx={{ display: 'flex' }}>
         <Box sx={{ width: '50%', my: 1, mr: 1 }}>
-          <MultipleSelectField name="listUserAsign" label="assignees" names={names} control={control} />
+          <MultipleSelectField
+            name="listUserAsign"
+            label="assignees"
+            names={assignees.map((item) => ({ id: item.userId, label: item.name, value: item.userId }))}
+            control={control}
+          />
         </Box>
         <Box sx={{ width: '50%', my: 1, ml: 1 }}>
           <Typography variant="caption" id="input-slider" gutterBottom>
@@ -106,6 +142,7 @@ export default function TaskForm({ onSubmit, initialValue, loading, setOpen }) {
         </Box>
       </Box>
       <Box sx={{ my: 1 }}>
+        <Typography variant="caption">Description</Typography>
         <Editor
           initialValue={initialValue?.description}
           apiKey="088k00pywypmab32s73wfelfhll22yz3asentq9oq3vb46q0"
@@ -134,7 +171,7 @@ export default function TaskForm({ onSubmit, initialValue, loading, setOpen }) {
           Submit
         </Button>
       </Box>
-      <BackdropProgress isOpen={loading} />
+      {/* <BackdropProgress isOpen={loading} /> */}
     </Box>
   );
 }

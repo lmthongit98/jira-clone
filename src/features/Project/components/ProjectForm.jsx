@@ -69,7 +69,12 @@ export default function ProjectForm({
         />
         <FormHelperText error={!!errors['description']}>{errors['description']?.message}</FormHelperText>
       </Box>
-      <SelectField name="categoryId" label="Category" control={control} options={projectCategories} />
+      <SelectField
+        name="categoryId"
+        label="Category"
+        control={control}
+        options={projectCategories.map((item) => ({ id: item.id, label: item.projectCategoryName, value: item.id }))}
+      />
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button type="button" onClick={() => setOpen(false)} variant="outlined" sx={{ mt: 1, mb: 2, mr: 1 }}>
           Cancel

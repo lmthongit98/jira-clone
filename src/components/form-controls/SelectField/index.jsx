@@ -25,8 +25,8 @@ function SelectField({ name, control, label, options, ...inputProps }) {
       helperText={error?.message}
     >
       {options.map((option) => (
-        <MenuItem key={option.id} value={option.id}>
-          {option.projectCategoryName}
+        <MenuItem key={option.id} value={option.value}>
+          {option.label}
         </MenuItem>
       ))}
     </TextField>
