@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import priorityApi from 'api/priorityApi';
 import projectApi from 'api/projectApi';
+import statusApi from 'api/statusApi';
+import taskTypeApi from 'api/taskTypeApi';
 import { toast } from 'react-toastify';
 
 export const getProjects = createAsyncThunk('project/getProjects', async () => {
@@ -18,6 +21,21 @@ export const updateProject = createAsyncThunk('project/updateProject', async (pr
   return data.content;
 });
 
+export const getStatuses = createAsyncThunk('project/getStatuses', async () => {
+  const data = await statusApi.getAllStatus();
+  return data.content;
+});
+
+export const getPriorities = createAsyncThunk('project/getPriorities', async () => {
+  const data = await priorityApi.getAllPriority();
+  return data.content;
+});
+
+export const getTaskTypes = createAsyncThunk('project/getTaskTypes', async () => {
+  const data = await taskTypeApi.getAllTaskTypes();
+  return data.content;
+});
+
 const userSlice = createSlice({
   name: 'project',
   initialState: {
@@ -25,6 +43,10 @@ const userSlice = createSlice({
     loading: false,
     deleteLoading: false,
     updateLoading: false,
+
+    statuses: [],
+    priorities: [],
+    taskTypes: [],
   },
   reducers: {},
   extraReducers: {
@@ -41,7 +63,7 @@ const userSlice = createSlice({
       console.log('Fail to get project', action.error);
     },
 
-    // DELETE
+    // DELETE PROJECT
     [deleteProject.pending]: (state) => {
       state.deleteLoading = true;
     },
@@ -56,7 +78,7 @@ const userSlice = createSlice({
       toast.error('Fail to delete project', action.error);
     },
 
-    // UPDATE
+    // UPDATE PROJECT
     [updateProject.pending]: (state) => {
       state.updateLoading = true;
     },
@@ -68,6 +90,21 @@ const userSlice = createSlice({
       console.log('Fail to get project', action.error);
       toast.error('Fail to update project');
       state.updateLoading = false;
+    },
+
+    //GET STATUSES
+    [getStatuses.fulfilled]: (state, action) => {
+      state.statuses = action.payload;
+    },
+
+    //GET PRIORITIES
+    [getPriorities.fulfilled]: (state, action) => {
+      state.priorities = action.payload;
+    },
+
+    //GET TASK TYPES
+    [getTaskTypes.fulfilled]: (state, action) => {
+      state.taskTypes = action.payload;
     },
   },
 });
