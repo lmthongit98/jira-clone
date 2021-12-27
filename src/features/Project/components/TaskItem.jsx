@@ -3,7 +3,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
-import { Box, Paper, Tooltip } from '@mui/material';
+import { Box, Paper, Tooltip, Typography } from '@mui/material';
 import CommonDialog from 'components/CommonDialog';
 import React, { useState } from 'react';
 import TaskDetail from './TaskDetail';
@@ -19,7 +19,7 @@ export default function TaskItem({ task = {} }) {
     <>
       <Box onClick={handleTaskClick}>
         <Paper sx={{ cursor: 'pointer', margin: '5px', p: 1 }}>
-          <Box dangerouslySetInnerHTML={{ __html: task?.description }} />
+          <Typography sx={{ my: 1 }}>{task.taskName}</Typography>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box>
               {task.priorityTask?.priorityId === 1 && (

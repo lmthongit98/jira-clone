@@ -48,14 +48,14 @@ export default function TaskDetail({ task }) {
         </Box>
       </Box>
       <Grid container>
-        <Grid item xs={9}>
+        <Grid item xs={9} sx={{ p: 1 }}>
           <Typography variant="h4" sx={{ mb: 1 }}>
             {task.taskName}
           </Typography>
           <Box>
             <Typography sx={{ fontSize: '1.2rem' }}>Description</Typography>
             <Box
-              sx={{ '&:hover': { backgroundColor: '#f4f5f7' } }}
+              sx={{ '&:hover': { backgroundColor: '#f4f5f7' }, p: 1 }}
               dangerouslySetInnerHTML={{ __html: task.description }}
             />
           </Box>
