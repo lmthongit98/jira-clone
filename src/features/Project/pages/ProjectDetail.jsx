@@ -1,11 +1,12 @@
 import { Box } from '@mui/material';
+import BackdropProgress from 'components/BackdropProgress';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ProjectDetailBoard from '../components/ProjectDetailBoard';
 import ProjectDetailDesc from '../components/ProjectDetailDesc';
 import ProjectDetailHeader from '../components/ProjectDetailHeader';
-import { getProjectDetail } from '../projectSlice';
+import { clearProjectDetail, getProjectDetail } from '../projectSlice';
 
 export default function ProjectDetail() {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ export default function ProjectDetail() {
 
   useEffect(() => {
     dispatch(getProjectDetail(projectId));
+    return () => dispatch(clearProjectDetail());
   }, [dispatch, projectId]);
 
   return (
@@ -22,6 +24,7 @@ export default function ProjectDetail() {
       <ProjectDetailHeader project={projectDetail} />
       <ProjectDetailDesc project={projectDetail} />
       <ProjectDetailBoard members={projectDetail?.members} taskList={projectDetail?.lstTask} />
+      <BackdropProgress isOpen={!projectDetail} />
     </Box>
   );
 }

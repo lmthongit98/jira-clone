@@ -8,11 +8,11 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
-import { getAssignees } from '../projectSlice';
+import { getAssignees, getProjectDetail } from '../projectSlice';
 
 export default function TaskForm(props) {
   const dispatch = useDispatch();
-
+  const { projectDetail } = useSelector((state) => state.projectReducer);
   const { onSubmit, initialValue, setOpen, statuses, priorities, taskTypes, myProjects } = props;
   const { assignees } = useSelector((state) => state.projectReducer);
 
@@ -47,9 +47,12 @@ export default function TaskForm(props) {
     setValue('description', content, { shouldValidate: true, shouldDirty: true });
   };
 
-  const handleSubmitForm = (values) => {
+  const handleSubmitForm = async (values) => {
     if (onSubmit) {
-      onSubmit(values);
+      const data = await onSubmit(values);
+      if (data && projectDetail && data.content.projectId === projectDetail.id) {
+        dispatch(getProjectDetail(projectDetail.id));
+      }
     }
   };
 

@@ -51,8 +51,7 @@ const userSlice = createSlice({
   name: 'project',
   initialState: {
     projects: [],
-    projectDetail: {},
-    loading: false,
+    projectDetail: null,
     deleteLoading: false,
     updateLoading: false,
 
@@ -61,18 +60,18 @@ const userSlice = createSlice({
     taskTypes: [],
     assignees: [],
   },
-  reducers: {},
+  reducers: {
+    clearProjectDetail(state) {
+      state.projectDetail = null;
+    },
+  },
   extraReducers: {
     // GET ALL PROJECTS
-    [getProjects.pending]: (state) => {
-      state.loading = true;
-    },
+
     [getProjects.fulfilled]: (state, action) => {
       state.projects = action.payload;
-      state.loading = false;
     },
     [getProjects.rejected]: (state, action) => {
-      state.loading = false;
       console.log('Fail to get project', action.error);
     },
 
@@ -137,6 +136,6 @@ const userSlice = createSlice({
 });
 
 const { actions, reducer } = userSlice;
-// export const {  } = actions;
+export const { clearProjectDetail } = actions;
 
 export default reducer;

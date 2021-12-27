@@ -11,7 +11,7 @@ import ProjectList from '../components/ProjectList';
 import { getProjects } from '../projectSlice';
 export default function ProjectManagement() {
   const dispatch = useDispatch();
-  const { projects, loading } = useSelector((state) => state.projectReducer);
+  const { projects } = useSelector((state) => state.projectReducer);
   const [openAddProject, setOpenAddProject] = useState(false);
   const [addLoading, setAddLoading] = useState(false);
 
@@ -57,7 +57,7 @@ export default function ProjectManagement() {
       <CommonDialog title="Add a new project" maxWidth="md" open={openAddProject} setOpen={setOpenAddProject}>
         <ProjectForm setOpen={setOpenAddProject} onSubmit={handleSubmitFormAdd} loading={addLoading} />
       </CommonDialog>
-      {loading && <Loading />}
+      {!projects.length && <Loading />}
     </Box>
   );
 }

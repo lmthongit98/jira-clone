@@ -68,6 +68,7 @@ export default function NavBarLeft() {
       const data = await taskApi.createTask(values);
       toast.success('Created task successfully!');
       setOpenAddTask(false);
+      return data;
     } catch (error) {
       console.log(error);
       toast.error('Fail to create task!');
