@@ -9,10 +9,11 @@ import React, { useState } from 'react';
 import TaskDetail from './TaskDetail';
 
 export default function TaskItem({ task = {} }) {
-  const [openEditTask, setOpenEditTask] = useState(false);
+  const [openDetailTask, setOpenDetailTask] = useState(false);
+  const [fullScreenDetailTask, setFullScreenDetailTask] = useState(false);
 
   const handleTaskClick = () => {
-    setOpenEditTask(true);
+    setOpenDetailTask(true);
   };
 
   return (
@@ -88,8 +89,18 @@ export default function TaskItem({ task = {} }) {
           </Box>
         </Paper>
       </Box>
-      <CommonDialog title="" maxWidth="lg" open={openEditTask} setOpen={setOpenEditTask}>
-        <TaskDetail task={task} />
+      <CommonDialog
+        fullScreen={fullScreenDetailTask}
+        isShowTitle={false}
+        maxWidth="lg"
+        open={openDetailTask}
+        setOpen={setOpenDetailTask}
+      >
+        <TaskDetail
+          setFullScreenDetailTask={setFullScreenDetailTask}
+          setOpenDetailTask={setOpenDetailTask}
+          task={task}
+        />
       </CommonDialog>
     </>
   );

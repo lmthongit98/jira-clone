@@ -22,6 +22,11 @@ export const updateProject = createAsyncThunk('project/updateProject', async (pr
   return data.content;
 });
 
+export const getProjectDetail = createAsyncThunk('project/getProjectDetail', async (projectId) => {
+  const data = await projectApi.getProjectDetail(projectId);
+  return data.content;
+});
+
 export const getStatuses = createAsyncThunk('project/getStatuses', async () => {
   const data = await statusApi.getAllStatus();
   return data.content;
@@ -46,6 +51,7 @@ const userSlice = createSlice({
   name: 'project',
   initialState: {
     projects: [],
+    projectDetail: {},
     loading: false,
     deleteLoading: false,
     updateLoading: false,
@@ -97,6 +103,11 @@ const userSlice = createSlice({
       console.log('Fail to get project', action.error);
       toast.error('Fail to update project');
       state.updateLoading = false;
+    },
+
+    //GET PROJECT DETAIL
+    [getProjectDetail.fulfilled]: (state, action) => {
+      state.projectDetail = action.payload;
     },
 
     //GET STATUSES
