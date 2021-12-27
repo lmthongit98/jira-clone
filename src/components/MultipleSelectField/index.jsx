@@ -41,9 +41,12 @@ export default function MultipleSelectField({ name, control, label, names, ...in
         error={invalid}
         renderValue={(selected) => (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {selected.map((value) => (
-              <Chip key={value} variant="outlined" label={getNameByValue(value)} />
-            ))}
+            {selected.map((value) => {
+              if (getNameByValue(value)) {
+                return <Chip key={value} variant="outlined" label={getNameByValue(value)} />;
+              }
+              return '';
+            })}
           </Box>
         )}
         MenuProps={MenuProps}

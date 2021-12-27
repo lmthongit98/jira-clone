@@ -1,41 +1,26 @@
-import { Box, Button, Slider, Typography } from '@mui/material';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Box, Button, FormHelperText, Slider, Typography } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react/lib/cjs/main/ts/components/Editor';
-import userApi from 'api/userApi';
 import InputFieldOutLined from 'components/form-controls/InputFields/InputFieldOutLined';
 import SelectField from 'components/form-controls/SelectField';
 import MultipleSelectField from 'components/MultipleSelectField';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
-
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
+import { getAssignees } from '../projectSlice';
 
 export default function TaskForm(props) {
-  const { onSubmit, initialValue, loading, setOpen, statuses, priorities, taskTypes, myProjects } = props;
+  const dispatch = useDispatch();
+
+  const { onSubmit, initialValue, setOpen, statuses, priorities, taskTypes, myProjects } = props;
+  const { assignees } = useSelector((state) => state.projectReducer);
+
   const validationSchema = Yup.object().shape({
-    projectName: Yup.string().required('Email is required!'),
+    projectId: Yup.string().required('Project is required!'),
+    taskName: Yup.string().required('Task name is required!'),
     description: Yup.string().required('Description is required!'),
-    categoryId: Yup.string().required('Category is required!'),
   });
-
-  const [assignees, setAssignees] = useState([]);
-
-  const handleSubmitForm = (values) => {
-    if (onSubmit) {
-      onSubmit(values);
-    }
-  };
 
   const {
     formState: { errors },
@@ -45,23 +30,23 @@ export default function TaskForm(props) {
     watch,
   } = useForm({
     defaultValues: initialValue,
+    resolver: yupResolver(validationSchema),
   });
 
-  const watchProject = watch('projectId');
+  const selectedProjectId = watch('projectId');
 
   useEffect(() => {
-    try {
-      (async () => {
-        const { content } = await userApi.getUserByProjectId(watchProject);
-        setAssignees(content);
-      })();
-    } catch (error) {
-      console.log('Fail', error);
-    }
-  }, [watchProject]);
+    dispatch(getAssignees(selectedProjectId));
+  }, [selectedProjectId, dispatch]);
 
   const handleEditorChange = (content, editor) => {
     setValue('description', content, { shouldValidate: true, shouldDirty: true });
+  };
+
+  const handleSubmitForm = (values) => {
+    if (onSubmit) {
+      onSubmit(values);
+    }
   };
 
   return (
@@ -162,6 +147,7 @@ export default function TaskForm(props) {
           }}
           onEditorChange={handleEditorChange}
         />
+        <FormHelperText error={!!errors['description']}>{errors['description']?.message}</FormHelperText>
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button type="button" onClick={() => setOpen(false)} variant="outlined" sx={{ mt: 1, mb: 2, mr: 1 }}>

@@ -4,25 +4,21 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { IconButton, Tooltip } from '@mui/material';
 import { Box } from '@mui/system';
-import priorityApi from 'api/priorityApi';
-import statusApi from 'api/statusApi';
 import taskApi from 'api/taskApi';
-import taskTypeApi from 'api/taskTypeApi';
 import CommonDialog from 'components/CommonDialog';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { getPriorities, getProjects, getStatuses, getTaskTypes } from '../projectSlice';
 import TaskForm from './TaskForm';
 
 export default function NavBarLeft() {
+  const dispatch = useDispatch();
   const [openAddTask, setOpenAddTask] = useState(false);
-
   const { projects } = useSelector((state) => state.projectReducer);
   const { current } = useSelector((state) => state.userReducer);
   const [myProjects, setMyProjects] = useState([]);
-  const [statuses, setStatuses] = useState([]);
-  const [priorities, setPriorities] = useState([]);
-  const [taskTypes, setTaskTypes] = useState([]);
+  const { statuses, priorities, taskTypes } = useSelector((state) => state.projectReducer);
   const [task, setTask] = useState({
     listUserAsign: [],
     taskName: '',
@@ -37,39 +33,31 @@ export default function NavBarLeft() {
   });
 
   useEffect(() => {
+    setTask((prevTask) => ({
+      ...prevTask,
+      statusId: statuses[0]?.statusId,
+      priorityId: priorities[0]?.priorityId,
+      typeId: taskTypes[0]?.id,
+    }));
+  }, [statuses, priorities, taskTypes]);
+
+  useEffect(() => {
+    dispatch(getProjects());
+  }, [dispatch]);
+
+  useEffect(() => {
     setMyProjects(projects.filter((project) => project.creator.id === current.id));
   }, [projects, current]);
 
   useEffect(() => {
-    setTask((prevTask) => ({ ...prevTask, projectId: projects[0]?.id }));
-  }, [myProjects, projects]);
+    setTask((prevTask) => ({ ...prevTask, projectId: myProjects[0]?.id }));
+  }, [myProjects]);
 
   useEffect(() => {
-    let isSubscribe = true;
-    try {
-      (async () => {
-        const [{ content: statuses }, { content: priorities }, { content: taskTypes }] = await Promise.all([
-          statusApi.getAllStatus(),
-          priorityApi.getAllPriority(),
-          taskTypeApi.getAllTaskTypes(),
-        ]);
-        if (isSubscribe) {
-          setStatuses(statuses);
-          setPriorities(priorities);
-          setTaskTypes(taskTypes);
-          setTask((prevTask) => ({
-            ...prevTask,
-            statusId: statuses[0]?.statusId,
-            priorityId: priorities[0]?.priorityId,
-            typeId: taskTypes[0]?.id,
-          }));
-        }
-      })();
-    } catch (error) {
-      console.log('Fail', error);
-    }
-    return () => (isSubscribe = false);
-  }, []);
+    dispatch(getStatuses());
+    dispatch(getPriorities());
+    dispatch(getTaskTypes());
+  }, [dispatch]);
 
   const handleClickAddIssue = () => {
     setOpenAddTask(true);

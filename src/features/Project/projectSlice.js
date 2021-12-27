@@ -3,6 +3,7 @@ import priorityApi from 'api/priorityApi';
 import projectApi from 'api/projectApi';
 import statusApi from 'api/statusApi';
 import taskTypeApi from 'api/taskTypeApi';
+import userApi from 'api/userApi';
 import { toast } from 'react-toastify';
 
 export const getProjects = createAsyncThunk('project/getProjects', async () => {
@@ -36,6 +37,11 @@ export const getTaskTypes = createAsyncThunk('project/getTaskTypes', async () =>
   return data.content;
 });
 
+export const getAssignees = createAsyncThunk('project/getAssignees', async (id) => {
+  const data = await userApi.getUserByProjectId(id);
+  return data.content;
+});
+
 const userSlice = createSlice({
   name: 'project',
   initialState: {
@@ -47,6 +53,7 @@ const userSlice = createSlice({
     statuses: [],
     priorities: [],
     taskTypes: [],
+    assignees: [],
   },
   reducers: {},
   extraReducers: {
@@ -105,6 +112,15 @@ const userSlice = createSlice({
     //GET TASK TYPES
     [getTaskTypes.fulfilled]: (state, action) => {
       state.taskTypes = action.payload;
+    },
+
+    //ASSIGNEES
+    [getAssignees.fulfilled]: (state, action) => {
+      state.assignees = action.payload;
+    },
+
+    [getAssignees.rejected]: (state, action) => {
+      state.assignees = [];
     },
   },
 });
