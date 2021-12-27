@@ -4,7 +4,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import { Grid, IconButton, MenuItem, Select, TextField, Tooltip, Typography } from '@mui/material';
+import { Grid, IconButton, MenuItem, Select, Slider, TextField, Tooltip, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -127,6 +127,18 @@ export default function TaskDetail({ task }) {
           </Box>
           <Box sx={{ mb: 2 }}>
             <Typography>TIME TRACKING</Typography>
+            <Box>
+              <Slider
+                value={task.timeTrackingSpent}
+                max={task.timeTrackingSpent + task.timeTrackingRemaining}
+                aria-label="Default"
+                valueLabelDisplay="auto"
+              />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography variant="caption">{task.timeTrackingSpent}h logged</Typography>
+                <Typography variant="caption">{task.timeTrackingRemaining}h remaining</Typography>
+              </Box>
+            </Box>
             <Box sx={{ display: 'flex', my: 1, mr: 1 }}>
               <Box sx={{ mr: 1 }}>
                 <Typography variant="caption">Time spent</Typography>

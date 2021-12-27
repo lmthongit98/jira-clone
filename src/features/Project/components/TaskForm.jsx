@@ -34,6 +34,10 @@ export default function TaskForm(props) {
   });
 
   const selectedProjectId = watch('projectId');
+  let timeSpent = watch('timeTrackingSpent');
+  timeSpent = +timeSpent;
+  let timeRemaining = watch('timeTrackingRemaining');
+  timeRemaining = +timeRemaining;
 
   useEffect(() => {
     dispatch(getAssignees(selectedProjectId));
@@ -105,10 +109,10 @@ export default function TaskForm(props) {
           <Typography variant="caption" id="input-slider" gutterBottom>
             Time tracking
           </Typography>
-          <Slider defaultValue={50} aria-label="Default" valueLabelDisplay="auto" />
+          <Slider value={timeSpent} max={timeSpent + timeRemaining} aria-label="Default" valueLabelDisplay="auto" />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="caption">1h logged</Typography>
-            <Typography variant="caption">8h remaining</Typography>
+            <Typography variant="caption">{timeSpent}h logged</Typography>
+            <Typography variant="caption">{timeRemaining}h remaining</Typography>
           </Box>
         </Box>
       </Box>
