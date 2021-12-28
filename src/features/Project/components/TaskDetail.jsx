@@ -29,7 +29,9 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
     dispatch(getStatuses());
     dispatch(getPriorities());
     dispatch(getTaskTypes());
-  }, [dispatch]);
+
+    return () => dispatch(getProjectDetail(task.projectId));
+  }, [dispatch, task.projectId]);
 
   const handleDeleteTask = () => {
     (async () => {
@@ -45,10 +47,9 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
   };
 
   const handleSaveDescription = () => {
-    const listUserAsign = task.assigness?.map((user) => user.id);
     const updatedTask = {
       description,
-      listUserAsign,
+      listUserAsign: task.assigness?.map((user) => user.id),
       taskId: task.taskId,
       taskName: task.taskName,
       statusId: task.statusId,
@@ -73,6 +74,31 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
       }
     })();
     setEditDesc(false);
+  };
+
+  const handleUpdateTask = (e) => {
+    const { name, value } = e.target;
+    const updatedTask = {
+      description: task.description,
+      listUserAsign: task.assigness?.map((user) => user.id),
+      taskId: task.taskId,
+      taskName: task.taskName,
+      statusId: task.statusId,
+      originalEstimate: task.originalEstimate,
+      timeTrackingSpent: task.timeTrackingSpent,
+      timeTrackingRemaining: task.timeTrackingRemaining,
+      projectId: task.projectId,
+      typeId: task.taskTypeDetail.id,
+      priorityId: task.priorityTask.priorityId,
+      [name]: value,
+    };
+    (async () => {
+      try {
+        const data = await taskApi.updateTask(updatedTask);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
   };
 
   return (
@@ -162,7 +188,7 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
           <Grid item xs={3}>
             <Box sx={{ mb: 2 }}>
               <Typography>STATUS</Typography>
-              <Select fullWidth value={task.statusId} size="small">
+              <Select onChange={handleUpdateTask} name="statusId" fullWidth defaultValue={task.statusId} size="small">
                 {statuses.map((status) => (
                   <MenuItem key={status.statusId} value={status.statusId}>
                     {status.statusName}
@@ -212,7 +238,13 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
 
             <Box sx={{ mb: 2 }}>
               <Typography>PRIORITY</Typography>
-              <Select fullWidth value={task.priorityTask.priorityId} size="small">
+              <Select
+                onChange={handleUpdateTask}
+                name="priorityId"
+                fullWidth
+                defaultValue={task.priorityTask.priorityId}
+                size="small"
+              >
                 {priorities.map((priority) => (
                   <MenuItem key={priority.priorityId} value={priority.priorityId}>
                     {priority.priority}
@@ -222,7 +254,15 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
             </Box>
             <Box sx={{ mb: 2 }}>
               <Typography>ORIGINAL ESTIMATE (HOURS)</Typography>
-              <TextField fullWidth value={task.originalEstimate} variant="outlined" size="small" />
+              <TextField
+                onChange={handleUpdateTask}
+                fullWidth
+                name="originalEstimate"
+                defaultValue={task.originalEstimate}
+                type="number"
+                variant="outlined"
+                size="small"
+              />
             </Box>
             <Box sx={{ mb: 2 }}>
               <Typography>TIME TRACKING</Typography>
@@ -242,8 +282,9 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
                 <Box sx={{ mr: 1 }}>
                   <Typography variant="caption">Time spent</Typography>
                   <TextField
+                    onChange={handleUpdateTask}
                     fullWidth
-                    value={task.timeTrackingSpent}
+                    defaultValue={task.timeTrackingSpent}
                     size="small"
                     type="number"
                     name="timeTrackingSpent"
@@ -252,8 +293,9 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
                 <Box sx={{ ml: 1 }}>
                   <Typography variant="caption">Time remaining</Typography>
                   <TextField
+                    onChange={handleUpdateTask}
                     fullWidth
-                    value={task.timeTrackingRemaining}
+                    defaultValue={task.timeTrackingRemaining}
                     size="small"
                     type="number"
                     name="timeTrackingRemaining"
