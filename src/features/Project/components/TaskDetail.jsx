@@ -1,4 +1,3 @@
-import AddIcon from '@mui/icons-material/Add';
 import AlbumIcon from '@mui/icons-material/Album';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
@@ -6,7 +5,19 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import OpenWithOutlinedIcon from '@mui/icons-material/OpenWithOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import { Button, Grid, IconButton, MenuItem, Select, Slider, TextField, Tooltip, Typography } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  Slider,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { Box } from '@mui/system';
 import { Editor } from '@tinymce/tinymce-react/lib/cjs/main/ts/components/Editor';
 import taskApi from 'api/taskApi';
@@ -77,10 +88,14 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
   };
 
   const handleUpdateTask = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+    const listUserAsign = task.assigness?.map((user) => user.id);
+    if (name === 'listUserAsign') {
+      value = [...listUserAsign, value];
+    }
     const updatedTask = {
+      listUserAsign,
       description: task.description,
-      listUserAsign: task.assigness?.map((user) => user.id),
       taskId: task.taskId,
       taskName: task.taskName,
       statusId: task.statusId,
@@ -95,6 +110,34 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
     (async () => {
       try {
         const data = await taskApi.updateTask(updatedTask);
+        if (name === 'listUserAsign') {
+          dispatch(getProjectDetail(task.projectId));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  };
+
+  const handleRemoveAssignee = (assignee) => {
+    const listUserAsign = task.assigness?.filter((user) => user.id !== assignee.id).map((user) => user.id);
+    const updatedTask = {
+      listUserAsign,
+      description: task.description,
+      taskId: task.taskId,
+      taskName: task.taskName,
+      statusId: task.statusId,
+      originalEstimate: task.originalEstimate,
+      timeTrackingSpent: task.timeTrackingSpent,
+      timeTrackingRemaining: task.timeTrackingRemaining,
+      projectId: task.projectId,
+      typeId: task.taskTypeDetail.id,
+      priorityId: task.priorityTask.priorityId,
+    };
+    (async () => {
+      try {
+        const data = await taskApi.updateTask(updatedTask);
+        dispatch(getProjectDetail(task.projectId));
       } catch (error) {
         console.log(error);
       }
@@ -221,18 +264,38 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
                       sx={{ borderRadius: '50%', margin: '0 3px' }}
                     />
                     <Typography>{assignee.name}</Typography>
-                    <IconButton>
+                    <IconButton onClick={() => handleRemoveAssignee(assignee)}>
                       <ClearOutlinedIcon />
                     </IconButton>
                   </Box>
                 ))}
-
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <IconButton>
-                    <AddIcon />
-                  </IconButton>
-                  <Typography>Add more</Typography>
-                </Box>
+              </Box>
+              <Box sx={{ my: 1, minWidth: 120 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Add assignees</InputLabel>
+                  <Select
+                    size="small"
+                    name="listUserAsign"
+                    value={''}
+                    label="Add assignees"
+                    onChange={handleUpdateTask}
+                  >
+                    {projectDetail.members
+                      .filter((item) => !task.assigness.some((x) => x.id === item.userId))
+                      .map((item) => (
+                        <MenuItem key={item.userId} value={item.userId}>
+                          <Box
+                            component="img"
+                            alt={item.name}
+                            height="35px"
+                            sx={{ borderRadius: '50%', margin: '0 3px' }}
+                            src={item.avatar}
+                          ></Box>
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
               </Box>
             </Box>
 
