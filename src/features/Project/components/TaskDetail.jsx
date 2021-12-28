@@ -10,6 +10,7 @@ import { Button, Grid, IconButton, MenuItem, Select, Slider, TextField, Tooltip,
 import { Box } from '@mui/system';
 import { Editor } from '@tinymce/tinymce-react/lib/cjs/main/ts/components/Editor';
 import taskApi from 'api/taskApi';
+import BackdropProgress from 'components/BackdropProgress';
 import ConfirmDialog from 'components/ConfirmDialog';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,8 +23,7 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [isEditDesc, setEditDesc] = useState(false);
   const [description, setDescription] = useState(task.description);
-
-  console.log(task);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     dispatch(getStatuses());
@@ -45,16 +45,31 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
   };
 
   const handleSaveDescription = () => {
-    const listUserAsign = task.assigness?.map((user, index) => user.id);
-    const updatedTask = { ...task, description, listUserAsign };
+    const listUserAsign = task.assigness?.map((user) => user.id);
+    const updatedTask = {
+      description,
+      listUserAsign,
+      taskId: task.taskId,
+      taskName: task.taskName,
+      statusId: task.statusId,
+      originalEstimate: task.originalEstimate,
+      timeTrackingSpent: task.timeTrackingSpent,
+      timeTrackingRemaining: task.timeTrackingRemaining,
+      projectId: task.projectId,
+      typeId: task.taskTypeDetail.id,
+      priorityId: task.priorityTask.priorityId,
+    };
     (async () => {
       try {
+        setLoading(true);
         const data = await taskApi.updateTask(updatedTask);
-        console.log(data);
+        dispatch(getProjectDetail(task.projectId));
         toast.success('Updated successfully!');
       } catch (error) {
         console.log(error);
         toast.error('Fail to update description!');
+      } finally {
+        setLoading(false);
       }
     })();
     setEditDesc(false);
@@ -254,6 +269,7 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
       <ConfirmDialog title="Delete task?" open={confirmOpen} setOpen={setConfirmOpen} onConfirm={handleDeleteTask}>
         Are you sure you want to delete this task?
       </ConfirmDialog>
+      <BackdropProgress isOpen={loading} />
     </>
   );
 }
