@@ -47,26 +47,6 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
   const handleSaveDescription = () => {
     const listUserAsign = task.assigness?.map((user, index) => user.id);
     const updatedTask = { ...task, description, listUserAsign };
-    const json = {
-      alias: 'support-new-device',
-      description: updatedTask.description,
-      assigness: updatedTask.assigness,
-      listUserAsign: updatedTask.listUserAsign,
-      lstComment: [],
-      originalEstimate: 2,
-      priorityId: updatedTask.priorityId,
-      priorityTask: { priorityId: 1, priority: 'High' },
-      projectId: updatedTask.projectId,
-      statusId: '2',
-      taskId: updatedTask.taskId,
-      taskName: 'support new device',
-      taskTypeDetail: { id: 2, taskType: 'new task' },
-      timeTrackingRemaining: 2,
-      timeTrackingSpent: 1,
-      typeId: 2,
-    };
-    console.log({ json });
-    console.log(updatedTask);
     (async () => {
       try {
         const data = await taskApi.updateTask(updatedTask);
