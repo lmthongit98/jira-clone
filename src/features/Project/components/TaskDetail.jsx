@@ -6,8 +6,9 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import OpenWithOutlinedIcon from '@mui/icons-material/OpenWithOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import { Grid, IconButton, MenuItem, Select, Slider, TextField, Tooltip, Typography } from '@mui/material';
+import { Button, Grid, IconButton, MenuItem, Select, Slider, TextField, Tooltip, Typography } from '@mui/material';
 import { Box } from '@mui/system';
+import { Editor } from '@tinymce/tinymce-react/lib/cjs/main/ts/components/Editor';
 import taskApi from 'api/taskApi';
 import ConfirmDialog from 'components/ConfirmDialog';
 import React, { useEffect, useState } from 'react';
@@ -19,6 +20,10 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
   const dispatch = useDispatch();
   const { statuses, priorities, taskTypes, projectDetail } = useSelector((state) => state.projectReducer);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [isEditDesc, setEditDesc] = useState(false);
+  const [description, setDescription] = useState(task.description);
+
+  console.log(task);
 
   useEffect(() => {
     dispatch(getStatuses());
@@ -37,6 +42,42 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
         toast.error('Fail to remove task!');
       }
     })();
+  };
+
+  const handleSaveDescription = () => {
+    const listUserAsign = task.assigness?.map((user, index) => user.id);
+    const updatedTask = { ...task, description, listUserAsign };
+    const json = {
+      alias: 'support-new-device',
+      description: updatedTask.description,
+      assigness: updatedTask.assigness,
+      listUserAsign: updatedTask.listUserAsign,
+      lstComment: [],
+      originalEstimate: 2,
+      priorityId: updatedTask.priorityId,
+      priorityTask: { priorityId: 1, priority: 'High' },
+      projectId: updatedTask.projectId,
+      statusId: '2',
+      taskId: updatedTask.taskId,
+      taskName: 'support new device',
+      taskTypeDetail: { id: 2, taskType: 'new task' },
+      timeTrackingRemaining: 2,
+      timeTrackingSpent: 1,
+      typeId: 2,
+    };
+    console.log({ json });
+    console.log(updatedTask);
+    (async () => {
+      try {
+        const data = await taskApi.updateTask(updatedTask);
+        console.log(data);
+        toast.success('Updated successfully!');
+      } catch (error) {
+        console.log(error);
+        toast.error('Fail to update description!');
+      }
+    })();
+    setEditDesc(false);
   };
 
   return (
@@ -83,10 +124,44 @@ export default function TaskDetail({ task, setFullScreenDetailTask, setOpenDetai
             </Typography>
             <Box>
               <Typography sx={{ fontSize: '1.2rem' }}>Description</Typography>
-              <Box
-                sx={{ '&:hover': { backgroundColor: '#f4f5f7' }, p: 1 }}
-                dangerouslySetInnerHTML={{ __html: task.description }}
-              />
+              {!isEditDesc && (
+                <Box
+                  onClick={() => setEditDesc(true)}
+                  sx={{ '&:hover': { backgroundColor: '#f4f5f7' }, p: 1 }}
+                  dangerouslySetInnerHTML={{ __html: task.description }}
+                />
+              )}
+              {isEditDesc && (
+                <Box sx={{ my: 1 }}>
+                  <Editor
+                    initialValue={task.description}
+                    apiKey="088k00pywypmab32s73wfelfhll22yz3asentq9oq3vb46q0"
+                    init={{
+                      selector: 'textarea#myTextArea',
+                      height: 500,
+                      menubar: false,
+                      plugins: [
+                        'advlist autolink lists link image charmap print preview anchor',
+                        'searchreplace visualblocks code fullscreen',
+                        'insertdatetime media table paste code help wordcount',
+                      ],
+                      toolbar:
+                        'undo redo | formatselect | bold italic backcolor | \
+            alignleft aligncenter alignright alignjustify | \
+            bullist numlist outdent indent | removeformat | help',
+                    }}
+                    onEditorChange={(content) => setDescription(content)}
+                  />
+                  <Box sx={{ mt: 1 }}>
+                    <Button onClick={handleSaveDescription} sx={{ mr: 2 }} variant="contained" color="primary">
+                      Save
+                    </Button>
+                    <Button onClick={() => setEditDesc(false)} color="primary">
+                      Cancel
+                    </Button>
+                  </Box>
+                </Box>
+              )}
             </Box>
           </Grid>
           <Grid item xs={3}>
