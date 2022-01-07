@@ -64,6 +64,12 @@ const userSlice = createSlice({
     clearProjectDetail(state) {
       state.projectDetail = null;
     },
+    updateTaskListDetail(state, action) {
+      const index = state.projectDetail.lstTask.findIndex((column) => column.statusId === action.payload.columnId);
+      if (index >= 0) {
+        state.projectDetail.lstTask[index].lstTaskDeTail = action.payload.newTaskListOfColumn;
+      }
+    },
   },
   extraReducers: {
     // GET ALL PROJECTS
@@ -136,6 +142,6 @@ const userSlice = createSlice({
 });
 
 const { actions, reducer } = userSlice;
-export const { clearProjectDetail } = actions;
+export const { clearProjectDetail, updateTaskListDetail } = actions;
 
 export default reducer;
