@@ -9,8 +9,8 @@
 Clone project and run test
 
 ```
-$git clone https://github.com/lmthongit98/trello-clone.git
+$git clone https://github.com/lmthongit98/jira-clone.git
 $ cd <project_dir>
-$ npm i
-$ npm start
+$ yarn
+$ yarn start
 ```
