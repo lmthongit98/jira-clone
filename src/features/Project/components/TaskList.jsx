@@ -19,6 +19,7 @@ export default function TaskList({ columnId, taskList = [], onCardDrop }) {
           className: 'task-drop-preview',
         }}
         dropPlaceholderAnimationDuration={200}
+        style={{ minHeight: '25rem' }}
       >
         {taskList.map((task) => (
           <Draggable key={task.taskId}>
